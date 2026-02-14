@@ -1,8 +1,9 @@
-##StakeholdersHolders
-* Sucursal -> Es aquel lugar en donde se entregan los paquetes y se guardan.
-* Recepcionista -> Es aquel actor que recibe el paquete y lo registra al sistema.
-* Almacenador de Paquetes -> Es aquel que empaca, clasifica y almacena el paquete.
-* Gestor de Inventario -> Es aquel que revisa el estado de un paquete en caso de paquetes dañados, extraviados o devueltos antes de mandarlo al módulo de gestión de rutas.
-* Remitente -> Es aquel que envía el paquete.
-* Módulo de gestión de rutas
-* Módulo de gestión
+### Stakeholders
+
+* **Sucursal**: Centralizar la logística de entrada y salida, garantizando el cumplimiento de los estándares de almacenamiento y custodia de activos.
+* **Recepcionista**: Ejecutar el pesaje, la verificación de contenido y el registro formal en el sistema, emitiendo la documentación técnica del servicio.
+* **Almacenador**: Realizar el embalaje, la clasificación técnica y la ubicación estratégica de la mercancía para optimizar los ciclos de despacho.
+* **Gestor de Inventario**: Auditar la integridad física de los bultos y gestionar procesos de logística inversa o incidencias antes de autorizar el tránsito a ruta y/o la clasificación de paquetes por motivos de No Entrega.
+* **Remitente**: Suministrar la información de destino, declarar el contenido de la carga y formalizar la entrega de los activos para su procesamiento.
+* **Módulo de gestión de rutas**
+* **Módulo de gestión de finanzas**
