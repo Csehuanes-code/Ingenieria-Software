@@ -5,7 +5,7 @@ Gestionar Paquete No Entregado:
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Gestión de Novedades y Logística Inversa (Priority: P1)
+### User Story 1 - Gestión de Novedades y Logística Inversa (Priority: P3)
 
 Como Controlador de Novedades y Logística Inversa, quiero registrar el motivo por el cual un paquete no pudo ser entregado y definir su próximo estado (reprogramar o devolver), para evitar que el paquete quede en un "limbo" logístico.
 
@@ -50,4 +50,5 @@ Como Controlador de Novedades y Logística Inversa, quiero registrar el motivo p
 
 * **SC-001**: El 100% de los paquetes no entregados deben tener una causal justificada y un próximo paso definido en menos de 12 horas desde el reporte del conductor.
 * **SC-002**: El sistema debe bloquear la reprogramación automática si se supera el umbral de 3 intentos fallidos.
+
 
