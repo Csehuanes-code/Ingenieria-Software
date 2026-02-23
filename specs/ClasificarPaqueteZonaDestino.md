@@ -4,7 +4,7 @@
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Segmentación Geográfica de Bodega (Priority: P1)
+### User Story 1 - Segmentación Geográfica de Bodega (Priority: P2)
 
 Como Almacenista, quiero agrupar los paquetes físicamente según su zona de destino (Norte, Sur, Oriente, Occidente o Ciudad destino) para asegurar que el Módulo 2 pueda realizar la consolidación de carga de manera eficiente.
 
