@@ -6,7 +6,7 @@
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Actualizar estado de disponibilidad (Priority: P1)
+### User Story 1 - Actualizar estado de disponibilidad (Priority: P2)
 
 Como Almacenista, quiero actualizar el estado de disponibilidad del
 paquete para reflejar su condición operativa dentro de la bodega y
