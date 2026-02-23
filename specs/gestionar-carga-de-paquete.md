@@ -6,7 +6,7 @@
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Gestionar carga de paquete (Priority: P1)
+### User Story 1 - Gestionar carga de paquete (Priority: P2)
 
 Como Despachador de carga, quiero gestionar la carga de paquete para
 registrar formalmente la salida de los paquetes y garantizar la
