@@ -21,8 +21,8 @@ Como Almacenista, quiero organizar los paquetes recibidos en zonas específicas 
 
 2. **Scenario**: Validación de mercancía especial (Frágil/Peligrosa).
 * **Given** un paquete registrado con el atributo físico 'Frágil' o 'Peligrosos'.
-* **When** el almacenista escanea el UUID, confirma que el estado del paquete sea 'Frágil' o 'Peligroso' y su ubicacion en la zona de destino correspondiente.
-* **Then** el sistema emite una alerta de manejo especial y sugiere una ubicación de almacenamiento segura para evitar averías.
+* **When** el almacenista escanea el UUID, confirma que la categoría del paquete sea 'Frágil' o 'Peligroso' y su ubicacion en la zona de destino correspondiente.
+* **Then** el sistema emite una alerta de manejo especial y sugiere una ubicación de almacenamiento segura para evitar averías, como lo puede ser una zona en la categoría 'Zona de Manipulación Delicada' o 'Zona de Resguardo de Alto Riesgo'.
 
 ### Edge Cases
 
@@ -36,9 +36,9 @@ Como Almacenista, quiero organizar los paquetes recibidos en zonas específicas 
 
 ### Functional Requirements
 
-* **FR-001**: El sistema DEBE permitir al almacenista asignar una ubicación física (estante/zona) vinculada al UUID del paquete.
+* **FR-001**: El sistema DEBE permitir al almacenista asignar una ubicación física (zona) vinculada al UUID del paquete.
 * **FR-002**: El sistema DEBE actualizar automáticamente el estado del paquete a los estados posibles de acuerdo a las condiciones ('En Clasificación', 'Fuera de Tolerancia', 'Frágil', 'Peligroso') una vez se confirma su ubicación.
-* **FR-003**: El sistema DEBE restringir la clasificación de paquetes que no tengan dirección exacta o coordenadas GPS completas.
+* **FR-003**: El sistema DEBE restringir la clasificación de paquetes que no tengan dirección exacta o coordenadas GPS completas, de tal manera que se actualice el estado de los paquetes con esta condición, su estado pasara a ser 'Fuera de Tolerancia'.
 
 ### Key Entities
 
@@ -50,5 +50,5 @@ Como Almacenista, quiero organizar los paquetes recibidos en zonas específicas 
 
 ### Measurable Outcomes
 
-* **SC-001**: El 100% de los paquetes en estado "En Clasificación" deben tener asignada una zona de destino compatible con la lógica del Módulo 2. //PENDIENTE POR ESPECIFICAR  QUE una vez finalizada la clasificación, el 100% de los paquetes deben tener un estado diferente a 'En Clasificacion'
+* **SC-001**: Para todo paquete, dado que se ha terminado el proceso de preparación y clasificación, su estado debe ser diferente a 'En clasificación'
 * **SC-002**: Reducción del tiempo de búsqueda de paquetes durante el despacho al tener ubicaciones físicas registradas en el sistema, de tal manera que el tiempo entre la consulta y la respuesta del sitema no dure más de 45 segundos.
