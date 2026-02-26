@@ -1,53 +1,50 @@
-# Feature Specification: Solicitar Ruta de Paquete
+# Feature Specification: Solicitar Ruta de Paquete Preliminar (MOD1-UC-008)
 
-**Created**: 2026-02-21
+**Created**: 2026-02-26
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Estimación de Entrega en Recepción (Priority: P2)
+### User Story 1 - Proyección informativa de entrega (Priority: P2-Alta)
 
-Como Empleado de Envío y Recepción, quiero solicitar una ruta preliminar al momento del ingreso para informar al cliente la fecha estimada de salida y entrega.
+Como Empleado de Envío y Recepción, necesito consultar preliminarmente al Módulo 2 una estimación de ruta para poder imprimir en el comprobante del cliente su fecha estimada de despacho.
 
-**Why this priority**: Mejora la experiencia del cliente al proporcionar expectativas claras sobre el tiempo de despacho desde el primer contacto.
+**Why this priority**: Permite mejorar el nivel de servicio informando al cliente la fecha estimada desde el primer contacto, tratándose de una solicitud informativa que no asigna ni bloquea capacidad de flota.
 
-**Independent Test**: Tras el registro del paquete, invocar la función de solicitud de ruta y verificar que el sistema devuelva una ventana de tiempo de despacho basada en la zona de destino.
+**Independent Test**: Puede probarse enviando una consulta preliminar de solo lectura al Módulo 2 con coordenadas válidas y validando que el tiempo estimado retornado se imprima correctamente en el recibo.
 
 **Acceptance Scenarios**:
 
-1. **Scenario**: Asignación preliminar de ruta.
-* **Given** un paquete recién registrado con destino a una zona específica.
-* **When** el empleado solicita la ruta.
-* **Then** el sistema vincula el paquete a la cola de despacho de esa zona y proyecta la fecha de entrega.
-
-
-2. **Scenario**: Cambio de prioridad de ruta.
-* **Given** un paquete marcado como "Urgente".
-* **When** se solicita la ruta.
-* **Then** el sistema busca el primer espacio disponible en la flota de esa zona para priorizar su salida.
-
-
+1. **Scenario**: Emisión de comprobante con estimación
+   - **Given**: El paquete ha sido registrado en estado 'Recibido en Sede', posee GPS válido y el Módulo 2 se encuentra disponible para responder.
+   - **When**: El empleado confirma la solicitud de estimación al término del registro principal.
+   - **Then**: El sistema envía los datos de zona al Módulo 2, recibe la ventana de tiempo de despacho, la muestra en pantalla y la plasma en el comprobante impreso.
 
 ### Edge Cases
 
-* ¿Qué sucede si no hay rutas activas o programadas para el destino solicitado?
-* ¿Cómo se recalcula la fecha de entrega si el paquete se queda en "Novedad en Bodega" justo después del registro?
+- What happens when: el Módulo 2 informa que no hay rutas activas o programadas para el destino en el corto plazo? El sistema muestra el aviso "Fecha de despacho por confirmar" y el comprobante se emite vacío en ese campo.
+- What happens when: el empleado activa la prioridad 'Urgente' sobre el paquete? El sistema solicita explícitamente la fecha del primer espacio disponible en la flota y actualiza el comprobante con la nueva fecha y un indicador.
+- How does system handle: si el paquete pasa a estado 'Novedad' poco después de haber entregado el comprobante físico al cliente? El sistema genera una notificación paralela al área de atención al cliente para que informen la anulación o actualización de dicha fecha.
+- What happens when: el Módulo 2 no responde la consulta de estimación a tiempo? El sistema no bloquea el flujo principal de registro; asume "Por confirmar" en el comprobante y el paquete continúa su ciclo operativo normalmente.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
-* **FR-001**: El sistema DEBE filtrar las rutas disponibles basadas en la dirección/zona registrada en el Módulo 1.
-* **FR-002**: El sistema DEBE calcular el Tiempo de Despacho estimado.
-* **FR-003**: El sistema DEBE permitir la asignación preliminar a un vehículo o zona de carga según la disponibilidad del Módulo 2.
+- **FR-001**: System MUST: filtrar y consultar las rutas disponibles en el Módulo 2 basándose exclusivamente en la zona geográfica del paquete.
+- **FR-002**: System MUST: calcular internamente y mostrar el tiempo estimado de despacho según la respuesta de disponibilidad obtenida.
+- **FR-003**: System MUST: incluir y asegurar la impresión de la fecha estimada de despacho en el formato del comprobante de recepción.
+- **FR-004**: System MUST: soportar lógicamente la asignación de prioridad 'Urgente' para agilizar la búsqueda del primer espacio disponible en flota.
+- **NFR-001**: System MUST: garantizar que el 95% de las fechas estimadas proyectadas tengan un margen de error no mayor a $\pm1$ día operativo.
+- **NFR-002**: System MUST: completar y obtener la respuesta de estimación de ruta en un lapso inferior a 5 segundos desde la ejecución de la solicitud.
 
-### Key Entities
+### Key Entities *(include if feature involves data)*
 
-* **Ruta**: Representa el trayecto y la planificación logística asociada al paquete.
-* **Zona de Destino**: Clasificación geográfica derivada de las coordenadas GPS.
+- **Ruta Preliminar**: Entidad conceptual de proyección informativa que no ejecuta reservas definitivas ni registros en el Módulo 2.
+- **Zona de Destino**: Variable y clasificación geográfica derivada del GPS utilizada para la consulta de disponibilidad.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-* **SC-001**: El 95% de las solicitudes de ruta deben devolver una fecha estimada de entrega con un margen de error de +/- 1 día.
-* **SC-002**: Reducción de la incertidumbre del cliente mediante la emisión de una fecha de salida en el comprobante de recepción.
+- **SC-001**: El 95% de las estimaciones preliminares consultadas deben retornar una fecha estimada con un margen de error $\le1$ día.
+- **SC-002**: El 100% de los comprobantes emitidos en sede deben incluir la fecha proyectada o explícitamente el mensaje de validación "Por confirmar".
