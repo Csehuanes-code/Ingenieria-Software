@@ -9,8 +9,8 @@
 ### User Story 1 - Gestionar carga de paquete (Priority: P2)
 
 Como Despachador de carga, quiero gestionar la carga de paquete para
-registrar formalmente la salida de los paquetes y garantizar la
-transición controlada al estado "En Tránsito".
+registrar formalmente la salida de los paquetes y solicitar la asiganción de ruta al modulo
+de gestion de rutas, garantizando la continuidad del ciclo de vida del paquete.
 
 **Why this priority**: La carga del paquete constituye el punto formal
 de salida física desde la sede. Sin esta operación, el sistema no puede
@@ -19,19 +19,20 @@ paquete.
 
 **Independent Test**: Se puede probar seleccionando un paquete con
 estado "Listo para Despacho", confirmando la carga y verificando que el
-sistema actualice el estado a "En Tránsito", registre la fecha y hora y
-almacene el responsable de la operación.
+sistema registre la operacion de carga, registre la fecha y hora y
+almacene el responsable de la operación y envie la solicitud 
+al modulo de gestion de ruta.
 
 ------------------------------------------------------------------------
 
 ### Acceptance Scenarios
 
-1.  **Scenario**: Transición válida a estado En Tránsito.
+1.  **Scenario**: Transición válida de carga y solicitud de ruta.
     -   **Given** que el paquete tiene estado "Listo para Despacho".\
     -   **When** el despachador confirma la carga del paquete.\
-    -   **Then** el sistema actualiza el estado del paquete a "En
-        Tránsito" y registra la fecha y hora de salida.
-2.  **Scenario**: Bloqueo por estado no permitido.
+    -   **Then** el sistema registra la operación de carga, almacena la
+         fecha y hora, registra el responsable y envia la solucitud al modulo de gestión de rutas.
+    -    **Scenario**: Bloqueo por estado no permitido.
     -   **Given** que el paquete tiene un estado diferente a "Listo para
         Despacho".\
     -   **When** el despachador intenta gestionar la carga del paquete.\
@@ -62,15 +63,15 @@ almacene el responsable de la operación.
 
 -   **FR-001**: El sistema DEBE permitir gestionar la carga únicamente
     de paquetes en estado "Listo para Despacho".\
--   **FR-002**: El sistema DEBE actualizar el estado del paquete a "En
-    Tránsito" una vez confirmada la operación.\
+-   **FR-002**: El sistema DEBE registrar la operacion de carga del paquete.\  
 -   **FR-003**: El sistema DEBE registrar automáticamente la fecha y
     hora de la gestión de carga.\
 -   **FR-004**: El sistema DEBE asociar el identificador del Despachador
     de carga responsable a la operación.\
 -   **FR-005**: El sistema DEBE impedir la gestión de carga duplicada de
     un mismo UUID.
-
+-   **FR-006**: El sistema DEBE enviar una solicitud de ruta al modulo
+    de gestion de rutas una vez confirmada la carga.\  
 ------------------------------------------------------------------------
 
 ### Key Entities
@@ -88,8 +89,9 @@ almacene el responsable de la operación.
 
 ### Measurable Outcomes
 
--   **SC-001**: El 100% de los paquetes gestionados en carga deben
-    cambiar correctamente al estado "En Tránsito".\
+-   **SC-001**: El 100% de los paquetes gestionados deben registrarse
+    correctamente como operacion de carga cuando este en estado
+    "Listo para Desapcho".\
 -   **SC-002**: El sistema debe bloquear en el 100% de los casos la
     gestión de carga cuando el estado no sea permitido.\
 -   **SC-003**: El tiempo promedio para gestionar la carga de un paquete
