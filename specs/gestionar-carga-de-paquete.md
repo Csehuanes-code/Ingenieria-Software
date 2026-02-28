@@ -8,9 +8,10 @@
 
 ### User Story 1 - Gestionar carga de paquete (Priority: P2)
 
-Como Despachador de carga, quiero gestionar la carga de paquete para
-registrar formalmente la salida de los paquetes y solicitar la asiganción de ruta al modulo
-de gestion de rutas, garantizando la continuidad del ciclo de vida del paquete.
+Como Despachador de carga, quiero verificar y registrar la carga física 
+de los paquetes que ya tienen una ruta asignada, para confirmar formalmente 
+su salida de la sede y notificar al Módulo 2 que el vehículo está listo 
+para iniciar su recorrido.
 
 **Why this priority**: La carga del paquete constituye el punto formal
 de salida física desde la sede. Sin esta operación, el sistema no puede
@@ -30,8 +31,9 @@ al modulo de gestion de ruta.
 1.  **Scenario**: Transición válida de carga y solicitud de ruta.
     -   **Given** que el paquete tiene estado "Listo para Despacho".\
     -   **When** el despachador confirma la carga del paquete.\
-    -   **Then** el sistema registra la operación de carga, almacena la
-         fecha y hora, registra el responsable y envia la solucitud al modulo de gestión de rutas.
+    -   **Then** .el sistema registra la operación de carga, almacena la
+         fecha y hora, registra el responsable y notifica al Módulo 2 que
+         la carga física fue completada.
     -    **Scenario**: Bloqueo por estado no permitido.
     -   **Given** que el paquete tiene un estado diferente a "Listo para
         Despacho".\
@@ -73,8 +75,9 @@ al modulo de gestion de ruta.
     de carga responsable a la operación.\
 -   **FR-005**: El sistema DEBE impedir la gestión de carga duplicada de
     un mismo UUID.
--   **FR-006**: El sistema DEBE enviar una solicitud de ruta al modulo
-    de gestion de rutas una vez confirmada la carga.\  
+-   **FR-006**: El sistema DEBE notificar al Módulo 2 que el paquete
+     ha sido cargado físicamente en el vehículo, para que este último
+    proceda a confirmar el despacho y emitir el estado 'En Tránsito'.\  
 ------------------------------------------------------------------------
 
 ### Key Entities
