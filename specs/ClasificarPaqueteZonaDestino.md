@@ -8,7 +8,7 @@
 
 Como Almacenista, necesito agrupar los paquetes dentro de la bodega según su zona geográfica de destino para que el Módulo 2 pueda acceder a conjuntos de paquetes pre-organizados y maximizar la eficiencia en la consolidación de carga.
 
-**Why this priority**: Permite reducir los tiempos de carga de vehículos y mejorar la eficiencia del algoritmo de consolidación del Módulo 2. Este caso de uso es invocado por `Preparar Paquete para Almacenaje` (`<<include>>`), por lo que depende de que la preparación esté completada.
+**Why this priority**: Permite reducir los tiempos de carga de vehículos y mejorar la eficiencia del algoritmo de consolidación del Módulo 2. Este caso de uso es invocado por `Preparar Paquete para Almacenaje`, por lo que depende de que la preparación esté completada.
 
 **Independent Test**: Puede probarse escaneando un paquete en estado `En Clasificación`, validando que el algoritmo calcule correctamente la zona de destino basándose en las coordenadas GPS y el radio configurado (default: 5 km), e imprimiendo la etiqueta de zona correspondiente para verificar que el agrupamiento físico es correcto.
 
@@ -41,7 +41,6 @@ Como Almacenista, necesito agrupar los paquetes dentro de la bodega según su zo
 - **FR-002**: System MUST permitir la impresión o generación de etiquetas de zona para identificar físicamente el grupo de paquetes asignados a cada zona.
 - **FR-003**: System MUST emitir una alerta si un paquete `Frágil` o `Peligroso` intenta ser clasificado en una zona no apta para su categoría de mercancía.
 - **FR-004**: System MUST validar que la zona de destino no haya superado su capacidad máxima configurada antes de confirmar la clasificación del paquete.
-- **NFR-001**: System MUST lograr una reducción medible del tiempo de carga de vehículos del 20% respecto al proceso operativo sin clasificación previa, evaluable en auditoría mensual.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -53,4 +52,3 @@ Como Almacenista, necesito agrupar los paquetes dentro de la bodega según su zo
 ### Measurable Outcomes
 
 - **SC-001**: El 100% de los paquetes clasificados deben tener una zona de destino asignada antes de poder avanzar al estado `Listo para Despacho`.
-- **SC-002**: Se debe registrar una reducción del tiempo de carga de vehículos de al menos el 20%, medible en el primer mes post-implementación respecto a la línea base operativa actual.
