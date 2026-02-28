@@ -44,8 +44,6 @@ Registrar una novedad de `Dañado` o `Extraviado` en el Módulo 1 y verificar me
 ### Functional Requirements
 * **FR-001:** El sistema DEBE construir un paquete de datos (Payload) que incluya: UUID, Estado Final de Novedad y Valor Declarado.
 * **FR-002:** El sistema DEBE adjuntar la referencia o URL de la evidencia fotográfica capturada en bodega cuando el estado sea `Dañado`.
-* **FR-003:** El sistema DEBE registrar la confirmación del Módulo 3 para marcar el paquete como `Sincronizado Contablemente`.
-
 ---
 
 ## Key Entities
