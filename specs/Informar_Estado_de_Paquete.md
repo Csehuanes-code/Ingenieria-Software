@@ -6,25 +6,20 @@
 
 ### User Story 1 - Sincronización de estados finales con el Módulo de Finanzas (Priority: P1)
 
-Como Sistema (Módulo 1), necesito centralizar y enviar al Módulo 3 los estados finales del paquete (Entregado, Dañado, Extraviado, Devolución) junto con el valor declarado y las evidencias, para que el Módulo de Finanzas pueda ejecutar automáticamente los pagos, descuentos o cobros de póliza que correspondan.
+Como Sistema (Módulo 1), necesito centralizar y enviar al Módulo 3 los estados finales del paquete (Dañado, Extraviado, Devolución) junto con el valor declarado y las evidencias, para que el Módulo de Finanzas pueda ejecutar automáticamente los pagos, descuentos o cobros de póliza que correspondan.
 
-**Why this priority**: Es el trigger contable del sistema. Sin este informe el Módulo 3 no puede distinguir entre un pago al 100% (Entregado), una penalidad por daño (Dañado/Extraviado) o una liquidación parcial (Devolución), bloqueando completamente la liquidación de transportadores y el flujo de caja. Es invocado obligatoriamente por `Gestionar Novedad de Paquete` (`<<include>>`), y también por el sistema al recibir el estado `Entregado` desde el Módulo 2.
+**Why this priority**: Es el trigger contable del sistema. Sin este informe el Módulo 3 no puede distinguir entre una penalidad por daño (Dañado/Extraviado) o una liquidación parcial (Devolución), bloqueando completamente la liquidación de transportadores y el flujo de caja. Es invocado obligatoriamente por `Gestionar Novedad de Paquete` (`<<include>>`).
 
-**Independent Test**: Puede probarse simulando un cambio de estado a `Entregado` (recibido desde el Módulo 2) o `Dañado` (registrado desde Novedades del Módulo 1), y verificando mediante logs que el Módulo 3 reciba el JSON con el UUID, estado final y valor declarado, y que el sistema registre el ACK de confirmación de recepción.
+**Independent Test**: Puede probarse simulando un cambio de estado a `Dañado` , y verificando mediante logs que el Módulo 3 reciba el JSON con el UUID, estado final y valor declarado, y que el sistema registre el ACK de confirmación de recepción.
 
 **Acceptance Scenarios**:
 
-1. **Scenario**: Notificación de entrega exitosa al Módulo 3
-   - **Given** un paquete cuyo estado fue actualizado a `Entregado` por el Módulo 2.
-   - **When** el sistema detecta este cambio de estado en el ciclo de vida del paquete.
-   - **Then** el sistema construye el payload con UUID, estado `Entregado`, valor declarado e ID del transportador, y lo envía directamente al Módulo 3 para autorizar el pago del 100% de la tarifa por parada. El sistema registra el ACK de confirmación del Módulo 3.
-
-2. **Scenario**: Notificación de incidencia económica por novedad (Dañado o Extraviado)
+1. **Scenario**: Notificación de incidencia económica por novedad (Dañado o Extraviado)
    - **Given** un paquete que acaba de pasar por `Gestionar Novedad de Paquete` con estado `Dañado` o `Extraviado`.
    - **When** el caso de uso es invocado obligatoriamente por la gestión de la novedad (`<<include>>`).
    - **Then** el sistema envía al Módulo 3 el payload con estado de falla, valor declarado y URL de la evidencia fotográfica adjunta, para que aplique los descuentos al transportador o ejecute el cobro de la póliza de seguro correspondiente.
 
-3. **Scenario**: Notificación de retorno por devolución
+2. **Scenario**: Notificación de retorno por devolución
    - **Given** un paquete registrado con novedad de tipo `Devolución` en el Módulo 1.
    - **When** el sistema procesa el re-ingreso a bodega del paquete devuelto.
    - **Then** el sistema informa al Módulo 3 con el estado `Devolución` y el valor declarado, para que liquide el porcentaje de pago correspondiente a la logística inversa según la matriz de costos de retorno definida.
@@ -42,7 +37,7 @@ Como Sistema (Módulo 1), necesito centralizar y enviar al Módulo 3 los estados
 
 ### Functional Requirements
 
-- **FR-001**: System MUST construir un payload que incluya como mínimo: UUID del paquete, Estado Final (Entregado, Dañado, Extraviado, Devolución), Valor Declarado e ID del Transportador.
+- **FR-001**: System MUST construir un payload que incluya como mínimo: UUID del paquete, Estado Final (Dañado, Extraviado, Devolución), Valor Declarado e ID del Transportador.
 - **FR-002**: System MUST adjuntar la referencia o URL de la evidencia fotográfica o firma digital (POD) al payload cuando el estado final sea `Dañado`, `Extraviado` o `Entregado`.
 - **FR-003**: System MUST registrar la confirmación (ACK) recibida del Módulo 3 y marcar el paquete como `Sincronizado Contablemente` en el historial de estados.
 
@@ -50,11 +45,11 @@ Como Sistema (Módulo 1), necesito centralizar y enviar al Módulo 3 los estados
 
 - **UUID**: Identificador único del paquete que garantiza que el Módulo 3 liquide el envío correcto sin ambigüedades.
 - **Valor Declarado**: Monto económico capturado en la admisión que define el límite de responsabilidad del seguro y la base de cálculo de pagos y penalidades.
-- **Estado Final**: Atributo que determina el porcentaje de pago o cobro aplicable. Valores posibles: `Entregado` (100% del pago), `Dañado` (penalidad + seguro), `Extraviado` (indemnización por valor declarado), `Devolución` (porcentaje por logística inversa).
+- **Estado Final**: Atributo que determina el porcentaje de pago o cobro aplicable. Valores posibles: `Dañado`, `Extraviado`, `Devolución`.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-- **SC-001**: El 100% de los paquetes que finalicen su ciclo operativo (Entregado, Dañado, Extraviado o Devolución) deben generar un registro de comunicación exitosa con el Módulo 3, confirmado por ACK.
+- **SC-001**: El 100% de los paquetes que finalicen su ciclo operativo (Dañado, Extraviado o Devolución) deben generar un registro de comunicación exitosa con el Módulo 3, confirmado por ACK.
 - **SC-002**: El tiempo de latencia entre el cambio de estado en el Módulo 1 y la recepción confirmada del dato en el Módulo 3 no debe exceder los 10 segundos bajo condiciones normales de red.
