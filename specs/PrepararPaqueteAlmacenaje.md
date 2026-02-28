@@ -8,7 +8,7 @@
 
 Como Almacenista, necesito organizar físicamente los paquetes recibidos en las zonas de almacenamiento sugeridas por el sistema, según su destino geográfico y tipo de mercancía, para garantizar que el Módulo 2 pueda realizar la consolidación de carga de forma eficiente.
 
-**Why this priority**: Garantiza la trazabilidad física del paquete dentro de bodega y elimina los puntos ciegos que impiden la consolidación de carga. Sin la asignación de zona no es posible ejecutar `Clasificar Paquete por Zona de Destino` (`<<include>>`).
+**Why this priority**: Garantiza la trazabilidad física del paquete dentro de bodega y elimina los puntos ciegos que impiden la consolidación de carga. Sin la asignación de zona no es posible ejecutar `Clasificar Paquete por Zona de Destino`.
 
 **Independent Test**: Puede probarse escaneando el UUID de un paquete en estado `Recibido en Sede` con datos físicos y GPS completos, verificando que el sistema sugiera la zona correcta según coordenadas y tipo de mercancía, y confirmando que al aceptar la sugerencia el estado cambia a `En Clasificación` y se actualiza el contador de ocupación de la zona asignada.
 
@@ -17,7 +17,7 @@ Como Almacenista, necesito organizar físicamente los paquetes recibidos en las 
 1. **Scenario**: Asignación exitosa a zona sugerida
    - **Given** el paquete existe con estado `Recibido en Sede`, tiene coordenadas GPS válidas y datos físicos registrados, y el almacenista está autenticado.
    - **When** el almacenista escanea el UUID y el sistema calcula y sugiere automáticamente la zona de almacenamiento correspondiente al destino.
-   - **Then** el almacenista confirma la zona sugerida, el sistema invoca `Clasificar Paquete por Zona de Destino` (`<<include>>`), registra la zona asignada, actualiza el estado del paquete a `En Clasificación` y actualiza el contador de ocupación (peso y volumen) de la zona.
+   - **Then** el almacenista confirma la zona sugerida, el sistema invoca `Clasificar Paquete por Zona de Destino`, registra la zona asignada, actualiza el estado del paquete a `En Clasificación` y actualiza el contador de ocupación (peso y volumen) de la zona.
 
 2. **Scenario**: Alerta de manejo especial para mercancía frágil o peligrosa
    - **Given** el paquete tiene el tipo de mercancía registrado como `Frágil` o `Peligroso`.
@@ -46,8 +46,6 @@ Como Almacenista, necesito organizar físicamente los paquetes recibidos en las 
 - **FR-005**: System MUST bloquear la clasificación de paquetes sin coordenadas GPS completas y válidas, marcándolos como `Fuera de Tolerancia — Sin GPS`.
 - **FR-006**: System MUST actualizar el contador de capacidad (peso acumulado y volumen acumulado) de la zona de almacenamiento al asignar o reasignar un paquete.
 - **FR-007**: System MUST emitir alerta de zona saturada y sugerir zona de contingencia cuando la zona destino alcance su capacidad máxima configurada.
-- **NFR-001**: System MUST garantizar que el tiempo de respuesta desde el escaneo del UUID hasta mostrar la zona sugerida no supere los 3 segundos en el percentil 95.
-- **NFR-002**: System MUST proporcionar una interfaz operable exclusivamente con lector de código de barras, sin necesidad de teclado, dada la naturaleza del entorno físico de bodega.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -60,5 +58,4 @@ Como Almacenista, necesito organizar físicamente los paquetes recibidos en las 
 ### Measurable Outcomes
 
 - **SC-001**: El 100% de los paquetes que completan el proceso deben tener una zona de almacenamiento asignada; ninguno puede quedar en estado `En Clasificación` sin zona registrada.
-- **SC-002**: El tiempo de respuesta del sistema al escanear el UUID no debe superar los 3 segundos en el percentil 95.
-- **SC-003**: El 0% de los paquetes `Frágil` o `Peligroso` pueden ser asignados a zonas no aptas para su categoría de mercancía.
+- **SC-002**: El 0% de los paquetes `Frágil` o `Peligroso` pueden ser asignados a zonas no aptas para su categoría de mercancía.
