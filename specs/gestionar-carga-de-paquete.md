@@ -21,8 +21,8 @@ paquete.
 **Independent Test**: Se puede probar seleccionando un paquete con
 estado "Listo para Despacho", confirmando la carga y verificando que el
 sistema registre la operacion de carga, registre la fecha y hora y
-almacene el responsable de la operación y envie la solicitud 
-al modulo de gestion de ruta.
+almacene el responsable de la operación y notifique la carga 
+completada al módulo de gestión de rutas.
 
 ------------------------------------------------------------------------
 
@@ -52,13 +52,13 @@ al modulo de gestion de ruta.
 
 -   ¿Qué ocurre si dos despachadores intentan gestionar la carga del
     mismo paquete simultáneamente?\ Solo se registra la primera confirmación,
-    la segunta es bloqueada y se informa que el paquete ya fue gestionado
+    la segunda es bloqueada y se informa que el paquete ya fue gestionado
 -   ¿Qué sucede si la sesión del usuario expira justo antes de confirmar
-    la carga?\Se redirige el uasuario a autenticacion y no se registra
+    la carga?\Se redirige el usuario a autenticacion y no se registra
     ninguna operacion
 -   ¿Cómo maneja el sistema un paquete marcado previamente como "Dañado"
     o "Extraviado"?La operación es bloqueada y se muestra un mensaje indicando
-    que el etsado no permite la gestion
+    que el estado no permite la gestion
 
 ------------------------------------------------------------------------
 
