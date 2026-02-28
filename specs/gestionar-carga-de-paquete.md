@@ -49,11 +49,14 @@ al modulo de gestion de ruta.
 ### Edge Cases
 
 -   ¿Qué ocurre si dos despachadores intentan gestionar la carga del
-    mismo paquete simultáneamente?\
+    mismo paquete simultáneamente?\ Solo se registra la primera confirmación,
+    la segunta es bloqueada y se informa que el paquete ya fue gestionado
 -   ¿Qué sucede si la sesión del usuario expira justo antes de confirmar
-    la carga?\
+    la carga?\Se redirige el uasuario a autenticacion y no se registra
+    ninguna operacion
 -   ¿Cómo maneja el sistema un paquete marcado previamente como "Dañado"
-    o "Extraviado"?
+    o "Extraviado"?La operación es bloqueada y se muestra un mensaje indicando
+    que el etsado no permite la gestion
 
 ------------------------------------------------------------------------
 
