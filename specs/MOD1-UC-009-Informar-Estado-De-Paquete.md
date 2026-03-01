@@ -8,15 +8,15 @@
 
 Como Sistema (Módulo 1), necesito centralizar y enviar al Módulo 3 los estados finales del paquete (Dañado, Extraviado, Devolución) junto con el valor declarado y las evidencias, para que el Módulo de Finanzas pueda ejecutar automáticamente los pagos, descuentos o cobros de póliza que correspondan.
 
-**Why this priority**: Es el trigger contable del sistema. Sin este informe el Módulo 3 no puede distinguir entre una penalidad por daño (Dañado/Extraviado) o una liquidación parcial (Devolución), bloqueando completamente la liquidación de transportadores y el flujo de caja. Es invocado obligatoriamente por `Gestionar Novedad de Paquete` (`<<include>>`).
+**Why this priority**: Es el trigger contable del sistema. Sin este informe el Módulo 3 no puede distinguir entre una penalidad por daño (Dañado/Extraviado) o una liquidación parcial (Devolución), bloqueando completamente la liquidación de transportadores y el flujo de caja. Es invocado obligatoriamente por [Gestionar Novedad de Paquete (MOD1-UC-008)](./MOD1-UC-008-Gestionar-Novedad-De-Paquete.md).
 
 **Independent Test**: Puede probarse simulando un cambio de estado a `Dañado` , y verificando mediante logs que el Módulo 3 reciba el JSON con el UUID, estado final y valor declarado, y que el sistema registre el ACK de confirmación de recepción.
 
 **Acceptance Scenarios**:
 
 1. **Scenario**: Notificación de incidencia económica por novedad (Dañado o Extraviado)
-   - **Given** un paquete que acaba de pasar por `Gestionar Novedad de Paquete` con estado `Dañado` o `Extraviado`.
-   - **When** el caso de uso es invocado obligatoriamente por la gestión de la novedad (`<<include>>`).
+   - **Given** un paquete que acaba de pasar por [Gestionar Novedad de Paquete (MOD1-UC-008)](./MOD1-UC-008-Gestionar-Novedad-De-Paquete.md) con estado `Dañado` o `Extraviado`.
+   - **When** el caso de uso es invocado obligatoriamente por la gestión de la novedad.
    - **Then** el sistema envía al Módulo 3 el payload con estado de falla, valor declarado y URL de la evidencia fotográfica adjunta, para que aplique los descuentos al transportador o ejecute el cobro de la póliza de seguro correspondiente.
 
 2. **Scenario**: Notificación de retorno por devolución

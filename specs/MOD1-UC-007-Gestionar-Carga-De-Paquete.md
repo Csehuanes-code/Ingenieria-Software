@@ -1,4 +1,4 @@
-# Feature Specification: Gestionar Carga de Paquete (MOD1-UC-006)
+# Feature Specification: Gestionar Carga de Paquete (MOD1-UC-007)
 
 **Created**: 2026-02-28
 

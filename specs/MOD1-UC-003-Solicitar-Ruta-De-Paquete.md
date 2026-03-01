@@ -1,4 +1,4 @@
-# Feature Specification: Solicitar Ruta de Paquete (MOD1-UC-008)
+# Feature Specification: Solicitar Ruta de Paquete (MOD1-UC-003)
 
 **Created**: 2026-02-28
 
@@ -8,7 +8,7 @@
 
 Como Sistema (Módulo 1), necesito enviar al Módulo 2 la solicitud oficial y definitiva de asignación de ruta inmediatamente tras el registro y pesaje del paquete, para reservar espacio en la flota y proveer al cliente una fecha estimada de despacho desde el primer contacto.
 
-**Why this priority**: Es la solicitud formal y única de asignación de ruta por ciclo de vida normal del paquete. Sin este evento el Módulo 2 no puede planificar rutas ni seleccionar vehículos. Es invocado automáticamente por `Registrar Admisión de Paquete`.
+**Why this priority**: Es la solicitud formal y única de asignación de ruta por ciclo de vida normal del paquete. Sin este evento el Módulo 2 no puede planificar rutas ni seleccionar vehículos. Es invocado automáticamente por [Registrar Admisión de Paquete(MOD1-UC-001)](MOD1-UC-001-Registrar-Admision-De-Paquete.md).
 
 **Independent Test**: Puede probarse completando exitosamente un registro de admisión y verificando en los logs que el sistema envió el JSON completo (según el Contrato de Integración) al Módulo 2, recibió confirmación con ventana de tiempo de despacho y que dicha información quedó impresa en el comprobante del cliente.
 
@@ -16,7 +16,7 @@ Como Sistema (Módulo 1), necesito enviar al Módulo 2 la solicitud oficial y de
 
 1. **Scenario**: Solicitud de ruta oficial exitosa con emisión de comprobante
    - **Given** el paquete ha sido registrado y pesado exitosamente (estado `Recibido en Sede`), posee coordenadas GPS válidas y el Módulo 2 está disponible.
-   - **When** el caso de uso es invocado automáticamente por `Registrar Admisión de Paquete`.
+   - **When** el caso de uso es invocado automáticamente por [Registrar Admisión de Paquete(MOD1-UC-001)](MOD1-UC-001-Registrar-Admision-De-Paquete.md).
    - **Then** el sistema construye y envía el payload JSON completo al Módulo 2, recibe la confirmación con la ventana de tiempo de despacho asignada, muestra la información en pantalla y la plasma en el comprobante impreso entregado al cliente.
 
 2. **Scenario**: Módulo 2 rechaza la solicitud por cobertura no disponible — Excepción de Ruta

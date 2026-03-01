@@ -8,7 +8,7 @@
 
 Como Empleado de Envío y Recepción, necesito capturar con precisión el peso y las dimensiones del paquete para garantizar su correcta tarificación y proveer al Módulo 2 los datos necesarios para la selección óptima del vehículo.
 
-**Why this priority**: Es el fundamento de la rentabilidad operativa y la integridad de la flota. Una medición incorrecta afecta el cálculo de costos y puede comprometer la seguridad de los vehículos. Este caso de uso es invocado obligatoriamente por `Registrar Admisión de Paquete`.
+**Why this priority**: Es el fundamento de la rentabilidad operativa y la integridad de la flota. Una medición incorrecta afecta el cálculo de costos y puede comprometer la seguridad de los vehículos. Este caso de uso es invocado obligatoriamente por [Registrar Admisión de Paquete(MOD1-UC-001)](./MOD1-UC-001-Registrar-Admision-De-Paquete.md).
 
 **Independent Test**: Puede probarse ingresando un conjunto de valores de peso y dimensiones en el formulario y verificando que el sistema calcule el volumen correctamente (largo × ancho × alto), valide que todas las medidas sean mayores a cero y dispare las alertas de manejo especial según el tipo de mercancía.
 

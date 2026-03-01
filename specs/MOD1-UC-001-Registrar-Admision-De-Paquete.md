@@ -16,7 +16,7 @@ Como Empleado de Envío y Recepción, necesito registrar los datos completos de 
 
 1. **Scenario**: Registro exitoso con pesaje obligatorio incluido
    - **Given** el empleado está autenticado y el cliente entrega el paquete físicamente con sus datos de contacto.
-   - **When** el empleado ingresa los datos del remitente y destinatario, el sistema valida las coordenadas GPS de la dirección, se ejecuta obligatoriamente el caso de uso `Procesar Pesaje y Dimensiones`, y el empleado confirma el registro.
+   - **When** el empleado ingresa los datos del remitente y destinatario, el sistema valida las coordenadas GPS de la dirección, se ejecuta obligatoriamente el caso de uso [Procesar Pesaje y Dimensiones (MOD1-UC-002)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md), y el empleado confirma el registro.
    - **Then** el sistema genera un UUID único, registra la fecha/hora y sede automáticamente, actualiza el estado a `Recibido en Sede` y emite la etiqueta física del paquete.
 
 2. **Scenario**: Registro con fallo de geolocalización — estado Pendiente GPS
@@ -29,7 +29,7 @@ Como Empleado de Envío y Recepción, necesito registrar los datos completos de 
 ### Edge Cases
 
 - What happens when el servicio de geocodificación falla (timeout > 5 segundos)? El sistema muestra un aviso al empleado. Se permite ingresar coordenadas manualmente o guardar la dirección en texto plano con estado `Pendiente GPS`. El paquete queda bloqueado para avanzar a clasificación hasta que las coordenadas sean válidas.
-- What happens when se intenta confirmar el registro sin haber completado el pesaje? El sistema bloquea la confirmación y muestra un mensaje indicando que el caso de uso `Procesar Pesaje y Dimensiones` es obligatorio antes de poder guardar el registro.
+- What happens when se intenta confirmar el registro sin haber completado el pesaje? El sistema bloquea la confirmación y muestra un mensaje indicando que el caso de uso [Procesar Pesaje y Dimensiones (MOD1-UC-002)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md) es obligatorio antes de poder guardar el registro.
 - How does system handle un intento de registrar un paquete con método de pago no soportado en la sede actual? El sistema valida el método contra la configuración de la sede y muestra los métodos válidos disponibles, impidiendo el guardado hasta seleccionar uno compatible.
 - What happens when el empleado cancela el formulario después de que ya se generó un UUID preliminar? El registro queda en estado `Borrador` por 30 minutos y es eliminado automáticamente si no se confirma. No se emite ningún evento externo.
 
@@ -46,7 +46,7 @@ Como Empleado de Envío y Recepción, necesito registrar los datos completos de 
 - **FR-007**: System MUST impedir la edición del UUID, la fecha de ingreso y la sede de origen una vez confirmado el registro.
 - **FR-008**: System MUST permitir el ingreso manual de coordenadas GPS como contingencia ante fallo del servicio de geocodificación.
 - **FR-009**: System MUST capturar los datos del Remitente (Documento, Nombre, Teléfono) y del Destinatario (Documento, Nombre, Teléfono, Email) como campos obligatorios del registro.
-- **FR-010**: System MUST invocar el caso de uso `Procesar Pesaje y Dimensiones` como parte obligatoria e inseparable del flujo de registro, impidiendo la confirmación si el pesaje no fue completado.
+- **FR-010**: System MUST invocar el caso de uso [Procesar Pesaje y Dimensiones (MOD1-UC-002)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md) como parte obligatoria e inseparable del flujo de registro, impidiendo la confirmación si el pesaje no fue completado.
 
 ### Key Entities *(include if feature involves data)*
 
