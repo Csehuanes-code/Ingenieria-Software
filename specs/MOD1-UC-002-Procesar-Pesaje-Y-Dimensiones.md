@@ -6,7 +6,7 @@
 
 ### User Story 1 - Captura de atributos físicos del paquete (Priority: P1)
 
-Como Empleado de Envío y Recepción, necesito capturar con precisión el peso y las dimensiones del paquete para garantizar su correcta tarificación y proveer al Módulo 2 los datos necesarios para la selección óptima del vehículo.
+Como Empleado de Envío y Recepción, necesito capturar con precisión el peso y las dimensiones del paquete para garantizar su correcta tarificación y proveer al `Módulo de Gestión de Rutas` los datos necesarios para la selección óptima del vehículo.
 
 **Why this priority**: Es el fundamento de la rentabilidad operativa y la integridad de la flota. Una medición incorrecta afecta el cálculo de costos y puede comprometer la seguridad de los vehículos. Este caso de uso es invocado obligatoriamente por [Registrar Admisión de Paquete(MOD1-UC-001)](./MOD1-UC-001-Registrar-Admision-De-Paquete.md).
 

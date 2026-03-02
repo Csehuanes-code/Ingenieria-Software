@@ -6,9 +6,9 @@
 
 ### User Story 1 - Agrupación lógica y geográfica en bodega (Priority: P2)
 
-Como Almacenista, necesito agrupar los paquetes dentro de la bodega según su zona geográfica de destino para que el Módulo 2 pueda acceder a conjuntos de paquetes pre-organizados y maximizar la eficiencia en la consolidación de carga.
+Como Almacenista, necesito agrupar los paquetes dentro de la bodega según su zona geográfica de destino para que el `Módulo de Gestión de Rutas` pueda acceder a conjuntos de paquetes pre-organizados y maximizar la eficiencia en la consolidación de carga.
 
-**Why this priority**: Permite reducir los tiempos de carga de vehículos y mejorar la eficiencia del algoritmo de consolidación del Módulo 2. Este caso de uso es invocado por [Preparar Paquete para Almacenaje (MOD1-UC-004)](./MOD1-UC-004-Preparar-Paquete-Para-Almacenaje.md), por lo que depende de que la preparación esté completada.
+**Why this priority**: Permite reducir los tiempos de carga de vehículos y mejorar la eficiencia del algoritmo de consolidación del `Módulo de Gestión de Rutas`. Este caso de uso es invocado por [Preparar Paquete para Almacenaje (MOD1-UC-004)](./MOD1-UC-004-Preparar-Paquete-Para-Almacenaje.md), por lo que depende de que la preparación esté completada.
 
 **Independent Test**: Puede probarse escaneando un paquete en estado `En Clasificación`, validando que el algoritmo calcule correctamente la zona de destino basándose en las coordenadas GPS y el radio configurado (default: 5 km), e imprimiendo la etiqueta de zona correspondiente para verificar que el agrupamiento físico es correcto.
 
@@ -44,7 +44,7 @@ Como Almacenista, necesito agrupar los paquetes dentro de la bodega según su zo
 
 ### Key Entities *(include if feature involves data)*
 
-- **Zona de Destino**: Clasificación lógica y física en bodega que sirve como entrada para el algoritmo de Consolidación de Carga del Módulo 2. Atributos clave: nombre, límites geográficos, capacidad máxima y estado de ocupación.
+- **Zona de Destino**: Clasificación lógica y física en bodega que sirve como entrada para el algoritmo de Consolidación de Carga del `Módulo de Gestión de Rutas`. Atributos clave: nombre, límites geográficos, capacidad máxima y estado de ocupación.
 - **Etiqueta de Zona**: Documento físico o digital que identifica visualmente el grupo de paquetes asignados a una zona de destino para facilitar su carga al vehículo.
 
 ## Success Criteria *(mandatory)*

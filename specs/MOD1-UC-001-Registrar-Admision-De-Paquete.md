@@ -8,9 +8,9 @@
 
 Como Empleado de Envío y Recepción, necesito registrar los datos completos de un paquete nuevo —incluyendo remitente, destinatario, dirección de destino y atributos físicos— para generar su identidad única en el sistema y dejarlo correctamente ingresado con toda la información necesaria para su posterior clasificación y despacho.
 
-**Why this priority**: Es el punto de entrada al sistema. Sin este registro el paquete no existe para ningún otro módulo. Orquesta la captura de datos del cliente y el pesaje obligatorio. La solicitud de ruta al Módulo 2 no ocurre aquí, sino más adelante cuando se han registrado todos los datos obligatorios del paquete.
+**Why this priority**: Es el punto de entrada al sistema. Sin este registro el paquete no existe para ningún otro módulo. Orquesta la captura de datos del cliente y el pesaje obligatorio. La solicitud de ruta al `Módulo de Gestión de Rutas` no ocurre aquí, sino más adelante cuando se han registrado todos los datos obligatorios del paquete.
 
-**Independent Test**: Puede probarse completando el formulario con datos válidos de remitente, destinatario, dirección y tipo de mercancía, ejecutando el pesaje incluido y confirmando el registro. El test es exitoso si el sistema genera un UUID único, emite la etiqueta física y el paquete queda en estado `Recibido en Sede` sin haber enviado ningún evento al Módulo 2.
+**Independent Test**: Puede probarse completando el formulario con datos válidos de remitente, destinatario, dirección y tipo de mercancía, ejecutando el pesaje incluido y confirmando el registro. El test es exitoso si el sistema genera un UUID único, emite la etiqueta física y el paquete queda en estado `Recibido en Sede` sin haber enviado ningún evento al `Módulo de Gestión de Rutas`.
 
 **Acceptance Scenarios**:
 
