@@ -1,6 +1,6 @@
 [Módulo de gestión de finanzas] - (Informar estado de paquete)
 [Controlador de Novedades] - (Gestionar novedad de paquete)
-[Módulo de gestión de rutas] - (Gestionar novedad de paquete)
+[Módulo de gestión de rutas] - (Gestionar novedad de paquete), [Módulo de gestión de rutas] - (Informar estado de paquete)
 (Gestionar novedad de paquete) > (Informar estado de paquete)
 [Empleado de envío y recepción] - (Registrar admisión de paquete), (Registrar admisión de paquete) > (Procesar pesaje y dimensiones), (Procesar pesaje y dimensiones) > (Solicitar ruta Paquete)
 [Almacenista] - (Preparar paquete para almacenaje), [Almacenista] - (Actualizar estado de disponibilidad), (Preparar paquete para almacenaje) > (Clasificar paquete por zona destino)
