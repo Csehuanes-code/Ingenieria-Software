@@ -6,7 +6,7 @@
 
 ### User Story 1 - Solicitud oficial de asignación de ruta y vehículo (Priority: P1)
 
-Como Sistema, necesito enviar al `Módulo de Gestión de Rutas` la solicitud oficial y definitiva de asignación de ruta inmediatamente tras el registro y pesaje del paquete, para reservar espacio en la flota y proveer al cliente una fecha estimada de despacho desde el primer contacto.
+Como Sistema, necesito enviar al `Módulo de Gestión de Rutas` la solicitud oficial y definitiva de asignación de ruta inmediatamente después de haber completado satisfactoriamente tanto [Registrar Admisión de Paquete(MOD1-UC-001)](./MOD1-UC-001-Registrar-Admision-De-Paquete.md) como [Procesar Pesaje y Dimensiones(MOD1-UC-00)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md), para reservar espacio en la flota y proveer al cliente una fecha estimada de despacho desde el primer contacto.
 
 **Why this priority**: Es la solicitud formal y única de asignación de ruta por ciclo de vida normal del paquete. Sin este evento el `Módulo de Gestión de Rutas` no puede planificar rutas ni seleccionar vehículos. Es invocado automáticamente por [Registrar Admisión de Paquete(MOD1-UC-001)](MOD1-UC-001-Registrar-Admision-De-Paquete.md).
 
@@ -43,7 +43,7 @@ Como Sistema, necesito enviar al `Módulo de Gestión de Rutas` la solicitud ofi
 
 ### Functional Requirements
 
-- **FR-001**: System MUST construir y enviar al `Módulo de Gestión de Rutas` el payload JSON oficial definido en el Contrato de Integración, incluyendo: UUID, peso_kg, volumen_m3, tipo_mercancia, direccion_destino, latitud, longitud, metodo_pago y valor_declarado.
+- **FR-001**: System MUST construir y enviar al `Módulo de Gestión de Rutas` el payload JSON oficial definido en el [Contrato de Integración](../Comunicacion-Entre-Modulos/contrato-integracion.md), incluyendo: UUID, peso_kg, volumen_m3, tipo_mercancia, direccion_destino, latitud, longitud, metodo_pago y valor_declarado.
 - **FR-002**: System MUST garantizar que esta solicitud se emita una única vez por ciclo de vida normal del paquete. El único reintento permitido es ante rechazo por cobertura (estado `Excepción de Ruta`) con corrección supervisada de la dirección.
 - **FR-003**: System MUST calcular y mostrar el tiempo estimado de despacho a partir de la respuesta del `Módulo de Gestión de Rutas`, plasmándolo en el comprobante de recepción entregado al cliente.
 - **FR-004**: System MUST soportar la asignación de prioridad `Urgente` en el payload para que el `Módulo de Gestión de Rutas` asigne el primer espacio disponible en flota.
