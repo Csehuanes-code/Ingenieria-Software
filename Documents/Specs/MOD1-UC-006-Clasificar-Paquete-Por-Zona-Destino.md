@@ -4,51 +4,72 @@
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Agrupación lógica y geográfica en bodega (Priority: P2)
+### User Story 1 - Agrupación lógica por zona geográfica de destino (Priority: P2)
 
-Como Almacenista, necesito agrupar los paquetes dentro de la bodega según su zona geográfica de destino para que el `Módulo de Gestión de Rutas` pueda acceder a conjuntos de paquetes pre-organizados y maximizar la eficiencia en la consolidación de carga.
+Como Almacenista, necesito asignar a cada paquete su zona de destino —una agrupación lógica geográfica basada en la proximidad del destinatario— y actualizar su estado a `Clasificado`, para que el Coordinador de Despacho pueda identificar físicamente los grupos de paquetes por zona y para que el `Módulo de Gestión de Rutas` maximice la eficiencia en la consolidación de carga de vehículos.
 
-**Why this priority**: Permite reducir los tiempos de carga de vehículos y mejorar la eficiencia del algoritmo de consolidación del `Módulo de Gestión de Rutas`. Este caso de uso es invocado por [Preparar Paquete para Almacenaje (MOD1-UC-004)](./MOD1-UC-004-Preparar-Paquete-Para-Almacenaje.md), por lo que depende de que la preparación esté completada.
+**Why this priority**: Permite reducir tiempos de carga de vehículos y mejorar la eficiencia del algoritmo de consolidación del `Módulo de Gestión de Rutas`. Este caso de uso es invocado por [Preparar Paquete para Almacenaje (MOD1-UC-004)](./MOD1-UC-004-Preparar-Paquete-Para-Almacenaje.md). Al completarse, el paquete alcanza el estado `Clasificado`, que es el prerrequisito para que [Actualizar Estado de Disponibilidad (MOD1-UC-005)](./MOD1-UC-005-Actualizar-Estado-De-Disponibilidad.md) lo transite a `Listo para Despacho`.
 
-**Independent Test**: Puede probarse escaneando un paquete en estado `En Clasificación`, validando que el algoritmo calcule correctamente la zona de destino basándose en las coordenadas GPS y el radio configurado (default: 5 km), e imprimiendo la etiqueta de zona correspondiente para verificar que el agrupamiento físico es correcto.
+> **Distinción de dominios**: La **Zona de Almacenamiento** es el espacio físico en bodega donde se ubica el paquete (gestionada en MOD1-UC-004). La **Zona de Destino** es una clasificación lógica y geográfica que agrupa paquetes por proximidad del destinatario para optimizar la consolidación de carga de vehículos (gestionada en este caso de uso). Son entidades independientes; un paquete tiene ambas asignadas al completar el flujo de almacenaje.
+
+**Independent Test**: Puede probarse con un paquete en estado `En Clasificación`, validando que el sistema calcule correctamente la zona de destino usando `latitud`, `longitud` y `radio_zona_km` (default 5 km), genere la etiqueta digital y que el estado del paquete cambie a `Clasificado` al confirmar.
 
 **Acceptance Scenarios**:
 
-1. **Scenario**: Asignación exitosa de zona de destino
-   - **Given** el paquete está en estado `En Clasificación`, tiene coordenadas GPS válidas y las zonas de destino están configuradas en el sistema.
-   - **When** el almacenista escanea el UUID y el sistema calcula la zona de destino basándose en las coordenadas y el radio_zona_km configurado.
-   - **Then** el almacenista confirma la zona sugerida y el sistema imprime o genera la etiqueta de zona para la identificación física del grupo de paquetes.
+1. **Scenario**: Asignación exitosa de zona de destino — estado Clasificado
+   - **Given** el paquete está en estado `En Clasificación`, tiene `gps_estado = Resuelto` y las zonas de destino están configuradas en el sistema.
+   - **When** el sistema calcula la zona de destino usando `latitud`, `longitud` y `radio_zona_km`; el almacenista confirma la zona sugerida.
+   - **Then** el sistema asigna la zona de destino al paquete, genera la etiqueta de zona (digital + disponible para impresión física), actualiza el estado del paquete a `Clasificado` y registra la transición en el Historial de Estados.
 
 2. **Scenario**: Destino fuera de zonas configuradas — escalamiento supervisado
    - **Given** las coordenadas GPS del paquete no corresponden a ninguna zona de destino configurada en el sistema.
    - **When** el sistema ejecuta el cálculo de zona.
-   - **Then** el sistema muestra un aviso de `Destino fuera de zonas configuradas`, bloquea la asignación automática y notifica al supervisor para que asigne manualmente la zona más apropiada, documentando la excepción.
+   - **Then** el sistema muestra el aviso `Destino fuera de zonas configuradas`, bloquea la asignación automática y notifica al Supervisor de Bodega para que asigne manualmente la zona más apropiada. La excepción queda documentada en el Historial de Estados del paquete.
 
 ---
 
 ### Edge Cases
 
-- What happens when las coordenadas GPS del paquete no corresponden a ninguna zona configurada? El sistema muestra un aviso de `Destino fuera de zonas configuradas` y el supervisor debe asignar la zona manualmente, dejando constancia de la excepción en el historial del paquete.
-- What happens when la zona de destino alcanza su límite de capacidad durante una clasificación masiva? El sistema emite una alerta en tiempo real al almacenista. Los paquetes siguientes para esa zona son redirigidos automáticamente a la zona de desborde configurada o se pausa la clasificación hasta que un supervisor tome acción.
-- How does system handle si el cliente cambia la dirección de destino después de que el paquete ya fue clasificado en una zona? El sistema reclasifica automáticamente la zona si las nuevas coordenadas corresponden a una zona diferente y notifica al almacenista para reubicar físicamente el paquete. Si la nueva dirección no tiene zona configurada, se escala al supervisor.
-- What happens when un paquete `Frágil` o `Peligroso` intenta clasificarse en una zona no apta para su tipo? El sistema emite una alerta y bloquea la clasificación hasta que se seleccione una zona con la categoría adecuada (Delicada o Alto Riesgo).
+- What happens when las coordenadas GPS no corresponden a ninguna zona configurada? El Supervisor de Bodega asigna la zona manualmente y documenta la excepción. El "Supervisor de Bodega" es el usuario con rol superior al Almacenista dentro del área de operaciones de bodega; en el sistema, corresponde al rol `Supervisor de Bodega` o `Administrador del Sistema`.
+- What happens when la zona de destino alcanza su capacidad lógica máxima (cantidad máxima de paquetes asignables)? El sistema emite una alerta en tiempo real. Los paquetes siguientes para esa zona son redirigidos a la zona de desborde lógico configurada o se pausa la clasificación hasta que el Supervisor de Bodega tome acción. Esta condición es independiente de la saturación de la zona de almacenamiento física.
+- How does system handle el cambio de dirección de destino después de que el paquete ya fue clasificado? El sistema reclasifica automáticamente la zona de destino si las nuevas coordenadas corresponden a una zona diferente, actualiza el estado a `En Clasificación` y notifica al almacenista para reubicar físicamente el paquete si la nueva zona implica un andén de carga diferente. Si la nueva dirección no tiene zona configurada, notifica al Supervisor de Bodega para asignación manual.
+- What happens when un paquete `Frágil` o `Peligroso` se clasifica en una zona de destino sin vehículos aptos configurados? El sistema emite una alerta y solicita confirmación del Supervisor de Bodega antes de completar la asignación, registrando la excepción.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
-- **FR-001**: System MUST agrupar paquetes automáticamente basándose en la cercanía geográfica de su destino, utilizando el radio_zona_km configurado (valor por defecto: 5 km).
-- **FR-002**: System MUST permitir la impresión o generación de etiquetas de zona para identificar físicamente el grupo de paquetes asignados a cada zona.
-- **FR-003**: System MUST emitir una alerta si un paquete `Frágil` o `Peligroso` intenta ser clasificado en una zona no apta para su categoría de mercancía.
-- **FR-004**: System MUST validar que la zona de destino no haya superado su capacidad máxima configurada antes de confirmar la clasificación del paquete.
+- **FR-001**: System MUST calcular la zona de destino del paquete usando `latitud`, `longitud` y el `radio_zona_km` configurado (valor por defecto: 5 km, configurable por el Administrador del Sistema).
+- **FR-002**: System MUST generar la etiqueta de zona en dos formatos: (a) **digital** (PDF o imagen PNG descargable desde la interfaz) para logística interna y trazabilidad digital; (b) disponible para **impresión física** desde cualquier impresora conectada al sistema, para cumplir los requerimientos físicos del proceso de carga al vehículo. La etiqueta debe incluir: código de zona, nombre de zona, UUID del paquete, código QR del UUID y zona de destino.
+- **FR-003**: System MUST emitir una alerta si un paquete `Frágil` o `Peligroso` intenta clasificarse en una zona de destino sin vehículos aptos, solicitando confirmación supervisada antes de confirmar.
+- **FR-004**: System MUST validar que la zona de destino no haya superado su `capacidad_max_paquetes` antes de confirmar la asignación.
+- **FR-005**: System MUST actualizar el estado del paquete a `Clasificado` al confirmar exitosamente la asignación, registrando la transición en el Historial de Estados con `timestamp` UTC e `id_usuario`.
 
 ### Key Entities *(include if feature involves data)*
 
-- **Zona de Destino**: Clasificación lógica y física en bodega que sirve como entrada para el algoritmo de Consolidación de Carga del `Módulo de Gestión de Rutas`. Atributos clave: nombre, límites geográficos, capacidad máxima y estado de ocupación.
-- **Etiqueta de Zona**: Documento físico o digital que identifica visualmente el grupo de paquetes asignados a una zona de destino para facilitar su carga al vehículo.
+- **Paquete**: Al completar este caso de uso, el paquete tiene estado `Clasificado` y los siguientes **atributos logísticos** completos:
+
+  | Atributo logístico | Descripción |
+  |---|---|
+  | `uuid` | Identificador único del envío |
+  | `id_zona_almacenamiento` | Zona física en bodega donde está ubicado |
+  | `id_zona_destino` | Zona lógica geográfica para consolidación de carga |
+  | `id_ruta` | Ruta asignada por M2 (puede estar pendiente si M2 aún no respondió) |
+  | `id_transportador` | Transportador asignado por M2 (puede estar pendiente) |
+  | `fecha_estimada_entrega` | Fecha estimada provista por M2 |
+  | `latitud` / `longitud` | Coordenadas GPS del destinatario |
+  | `direccion_destino_texto` | Dirección textual del destinatario |
+  | `metodo_pago` | `prepago` o `contra_entrega` |
+  | `valor_declarado` | Monto declarado por el remitente |
+  | `precio_envio_calculado` | Tarifa calculada en MOD1-UC-002 |
+  | `prioridad` | `Estándar` o `Urgente` |
+
+- **Zona de Destino**: `id` (PK), `nombre`, `latitud_centro`, `longitud_centro`, `radio_zona_km`, `capacidad_max_paquetes`, `paquetes_actuales`, `estado` (`Disponible` | `Saturado`).
+- **Etiqueta de Zona**: Documento digital (PDF/PNG) y físico (imprimible) que contiene código de zona, nombre de zona, UUID del paquete y código QR.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-- **SC-001**: El 100% de los paquetes clasificados deben tener una zona de destino asignada antes de poder avanzar al estado `Listo para Despacho`.
+- **SC-001**: El 100% de los paquetes que completan este caso de uso deben tener zona de destino asignada y estado `Clasificado`.
+- **SC-002**: El 0% de los paquetes deben poder avanzar a `Listo para Despacho` sin haber alcanzado el estado `Clasificado` previamente.
