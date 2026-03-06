@@ -12,14 +12,14 @@ Como Almacenista, necesito asignar a cada paquete su zona de destino —una agru
 
 > **Distinción de dominios**: La **Zona de Almacenamiento** es el espacio físico en bodega donde se ubica el paquete (gestionada en MOD1-UC-004). La **Zona de Destino** es una clasificación lógica y geográfica que agrupa paquetes por proximidad del destinatario para optimizar la consolidación de carga de vehículos (gestionada en este caso de uso). Son entidades independientes; un paquete tiene ambas asignadas al completar el flujo de almacenaje.
 
-**Independent Test**: Puede probarse con un paquete en estado `En Clasificación`, validando que el sistema calcule correctamente la zona de destino usando `latitud`, `longitud` y `radio_zona_km` (default 5 km), genere la etiqueta digital y que el estado del paquete cambie a `Clasificado` al confirmar.
+**Independent Test**: Puede probarse con un paquete en estado `En Clasificación`, validando que el sistema calcule correctamente la zona de destino usando `latitud`, `longitud` y `radio_zona_km` (default 5 km), genere la etiqueta digital de zona en el sistema y que el estado del paquete cambie a `Clasificado` al confirmar.
 
 **Acceptance Scenarios**:
 
 1. **Scenario**: Asignación exitosa de zona de destino — estado Clasificado
    - **Given** el paquete está en estado `En Clasificación`, tiene `gps_estado = Resuelto` y las zonas de destino están configuradas en el sistema.
    - **When** el sistema calcula la zona de destino usando `latitud`, `longitud` y `radio_zona_km`; el almacenista confirma la zona sugerida.
-   - **Then** el sistema asigna la zona de destino al paquete, genera la etiqueta de zona (digital + disponible para impresión física), actualiza el estado del paquete a `Clasificado` y registra la transición en el Historial de Estados.
+   - **Then** el sistema asigna la zona de destino al paquete, genera la etiqueta digital de zona dentro del sistema, actualiza el estado del paquete a `Clasificado` y registra la transición en el Historial de Estados.
 
 2. **Scenario**: Destino fuera de zonas configuradas — escalamiento supervisado
    - **Given** las coordenadas GPS del paquete no corresponden a ninguna zona de destino configurada en el sistema.
@@ -40,7 +40,7 @@ Como Almacenista, necesito asignar a cada paquete su zona de destino —una agru
 ### Functional Requirements
 
 - **FR-001**: System MUST calcular la zona de destino del paquete usando `latitud`, `longitud` y el `radio_zona_km` configurado (valor por defecto: 5 km, configurable por el Administrador del Sistema).
-- **FR-002**: System MUST generar la etiqueta de zona en dos formatos: (a) **digital** (PDF o imagen PNG descargable desde la interfaz) para logística interna y trazabilidad digital; (b) disponible para **impresión física** desde cualquier impresora conectada al sistema, para cumplir los requerimientos físicos del proceso de carga al vehículo. La etiqueta debe incluir: código de zona, nombre de zona, UUID del paquete, código QR del UUID y zona de destino.
+- **FR-002**: System MUST generar la etiqueta de zona como registro digital dentro del sistema al confirmar la clasificación. La etiqueta existe únicamente en el sistema; no puede exportarse, descargarse ni imprimirse en ningún formato (PDF, imagen u otro). Debe incluir: código de zona, nombre de zona, UUID del paquete y código QR del UUID.
 - **FR-003**: System MUST emitir una alerta si un paquete `Frágil` o `Peligroso` intenta clasificarse en una zona de destino sin vehículos aptos, solicitando confirmación supervisada antes de confirmar.
 - **FR-004**: System MUST validar que la zona de destino no haya superado su `capacidad_max_paquetes` antes de confirmar la asignación.
 - **FR-005**: System MUST actualizar el estado del paquete a `Clasificado` al confirmar exitosamente la asignación, registrando la transición en el Historial de Estados con `timestamp` UTC e `id_usuario`.
@@ -65,7 +65,7 @@ Como Almacenista, necesito asignar a cada paquete su zona de destino —una agru
   | `prioridad` | `Estándar` o `Urgente` |
 
 - **Zona de Destino**: `id` (PK), `nombre`, `latitud_centro`, `longitud_centro`, `radio_zona_km`, `capacidad_max_paquetes`, `paquetes_actuales`, `estado` (`Disponible` | `Saturado`).
-- **Etiqueta de Zona**: Documento digital (PDF/PNG) y físico (imprimible) que contiene código de zona, nombre de zona, UUID del paquete y código QR.
+- **Etiqueta de Zona**: Registro digital dentro del sistema que contiene código de zona, nombre de zona, UUID del paquete y código QR. No exportable ni imprimible.
 
 ## Success Criteria *(mandatory)*
 

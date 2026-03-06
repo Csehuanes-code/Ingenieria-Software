@@ -10,19 +10,19 @@ Como Empleado de Envío y Recepción, necesito registrar los datos completos de 
 
 **Why this priority**: Es el punto de entrada al sistema. Sin este registro el paquete no existe para ningún otro módulo. Una vez confirmado el pesaje (MOD1-UC-002), el paquete dispone de todos los campos requeridos por el Contrato de Integración (`peso_kg`, `volumen_m3`, `tipo_mercancia`, `latitud`, `longitud`, `metodo_pago`, `valor_declarado`) y por lo tanto la solicitud de ruta puede y debe emitirse de forma inmediata, sin necesidad de esperar a etapas de bodega.
 
-**Independent Test**: Puede probarse completando el formulario con datos válidos de remitente, destinatario, dirección y tipo de mercancía, ejecutando el pesaje incluido y confirmando el registro. El test es exitoso si el sistema genera un UUID único, emite la etiqueta física, el paquete queda en estado `Recibido en Sede` y los logs confirman que el evento `solicitar_ruta` fue enviado al `Módulo de Gestión de Rutas` con el payload completo.
+**Independent Test**: Puede probarse completando el formulario con datos válidos de remitente, destinatario, dirección y tipo de mercancía, ejecutando el pesaje incluido y confirmando el registro. El test es exitoso si el sistema genera un UUID único, emite la etiqueta digital del paquete en el sistema, el paquete queda en estado `Recibido en Sede` y los logs confirman que el evento `solicitar_ruta` fue enviado al `Módulo de Gestión de Rutas` con el payload completo.
 
 **Acceptance Scenarios**:
 
 1. **Scenario**: Registro exitoso con pesaje y solicitud de ruta automática
    - **Given** el empleado está autenticado, la sede está operativa y el cliente entrega el paquete con sus datos de contacto.
    - **When** el empleado completa todos los campos del formulario (ver FR-009), el sistema resuelve las coordenadas GPS vía Google Maps Geocoding API, se ejecuta obligatoriamente [Procesar Pesaje y Dimensiones (MOD1-UC-002)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md) con resultado exitoso, y el empleado confirma el registro.
-   - **Then** el sistema genera un UUID (v4) único, registra `timestamp_ingreso` UTC e `id_sede`, actualiza el estado a `Recibido en Sede`, emite la etiqueta física ZPL e invoca automáticamente [Solicitar Ruta de Paquete (MOD1-UC-003)](./MOD1-UC-003-Solicitar-Ruta-De-Paquete.md).
+   - **Then** el sistema genera un UUID (v4) único, registra `timestamp_ingreso` UTC e `id_sede`, actualiza el estado a `Recibido en Sede`, genera la etiqueta digital del paquete en el sistema e invoca automáticamente [Solicitar Ruta de Paquete (MOD1-UC-003)](./MOD1-UC-003-Solicitar-Ruta-De-Paquete.md).
 
 2. **Scenario**: Registro con fallo del servicio de geolocalización — campo GPS pendiente
    - **Given** el empleado completa todos los campos del formulario pero la Google Maps Geocoding API no responde (timeout > 5 segundos) o retorna un error.
    - **When** el sistema detecta el fallo del servicio.
-   - **Then** el sistema guarda la dirección en texto plano, marca `gps_estado = Pendiente GPS` en la entidad Paquete y notifica al empleado con un aviso visible. El paquete puede completar el pesaje y emitirse la etiqueta, pero el evento `solicitar_ruta` queda bloqueado hasta que `gps_estado` cambie a `Resuelto`, ya que `latitud` y `longitud` son campos obligatorios del payload.
+   - **Then** el sistema guarda la dirección en texto plano, marca `gps_estado = Pendiente GPS` en la entidad Paquete y notifica al empleado con un aviso visible. El paquete puede completar el pesaje y generarse la etiqueta digital, pero el evento `solicitar_ruta` queda bloqueado hasta que `gps_estado` cambie a `Resuelto`, ya que `latitud` y `longitud` son campos obligatorios del payload.
 
 ---
 
@@ -43,7 +43,7 @@ Como Empleado de Envío y Recepción, necesito registrar los datos completos de 
 - **FR-003**: System MUST registrar automáticamente `timestamp_ingreso` (UTC) e `id_sede` sin intervención del empleado.
 - **FR-004**: System MUST capturar `valor_declarado` y `metodo_pago` como campos obligatorios. El `valor_declarado` es el monto en moneda local que el remitente declara como valor comercial del contenido; este valor establece el límite de responsabilidad del seguro y es la base para el cálculo de la tarifa de envío (junto con peso, volumen, tipo de mercancía y distancia, según la tabla de tarifas definida en MOD1-UC-002). El `metodo_pago` acepta únicamente los valores `prepago` o `contra_entrega`, validados contra `metodos_pago_habilitados` de la Sede.
 - **FR-005**: System MUST validar que todos los campos obligatorios estén completos antes de permitir la confirmación. Los campos obligatorios son: datos del Remitente (ver FR-009), datos del Destinatario (ver FR-009), `direccion_destino_texto`, `valor_declarado` y `metodo_pago`.
-- **FR-006**: System MUST generar y emitir una etiqueta física en formato ZPL con el UUID representado en código QR y código de barras 1D al confirmar el registro.
+- **FR-006**: System MUST generar una etiqueta digital del paquete al confirmar el registro. La etiqueta existe únicamente dentro del sistema como registro digital vinculado al UUID; incluye el UUID representado en código QR y código de barras 1D, los datos del remitente, destinatario y sede. No puede exportarse, descargarse ni imprimirse en ningún formato (PDF, imagen u otro).
 - **FR-007**: System MUST impedir la edición de `uuid`, `timestamp_ingreso` e `id_sede` una vez que el registro pase de `Borrador` a `Recibido en Sede`.
 - **FR-008**: System MUST permitir el ingreso manual de `latitud` y `longitud` como contingencia, validando rangos geográficos válidos (latitud: −90 a 90; longitud: −180 a 180). Al guardar valores manuales válidos, actualizar `gps_estado = Resuelto`.
 - **FR-009**: System MUST capturar los siguientes campos de Remitente y Destinatario como obligatorios:
