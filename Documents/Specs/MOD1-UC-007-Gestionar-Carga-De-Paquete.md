@@ -2,77 +2,70 @@
 
 **Created**: 2026-02-28
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing
 
-### User Story 1 - Carga física de paquetes al vehículo y confirmación de despacho (Priority: P2)
+### User Story 1 — Carga física y despacho del vehículo (P2)
 
-Como Coordinador de Despacho, necesito escanear y verificar cada paquete en estado `Clasificado` con ruta asignada por el `Módulo de Gestión de Rutas`, cargarlo físicamente al vehículo correspondiente, actualizar su estado a través de `En Carga` hasta `Listo para Despacho`, y finalmente confirmar al `Módulo de Gestión de Rutas` que el vehículo está completamente cargado y listo para iniciar su ruta.
+Como Coordinador de Despacho, necesito registrar la carga física de los paquetes al vehículo y confirmar el despacho, para que el `Módulo de Gestión de Rutas` pueda iniciar el recorrido.
 
-**Why this priority**: Es el punto formal de salida física de la sede. El coordinador es el último actor del `Módulo de Gestión de Paquetes` que tiene custodia sobre el paquete antes de que el `Módulo de Gestión de Rutas` tome el control en campo. La confirmación del vehículo cargado es el evento que autoriza a M2 a emitir el estado `En Tránsito` y activar el seguimiento en ruta.
+**Why this priority**: Es el último control del módulo sobre el paquete antes de que el `Módulo de Gestión de Rutas` tome la custodia. Sin esta operación no se garantiza la cadena de custodia ni se puede emitir el estado `En Tránsito`.
 
-**Independent Test**: Puede probarse seleccionando un paquete en estado `Clasificado` con `id_ruta` e `id_transportador` disponibles en la entidad Solicitud de Ruta, escaneando su UUID para iniciar la carga (`En Carga`), confirmando su ubicación en el vehículo (`Listo para Despacho`), y verificando que — una vez todos los paquetes de la ruta estén en `Listo para Despacho` — el sistema emita la notificación de `vehiculo_listo` al `Módulo de Gestión de Rutas`.
+**Independent Test**: Seleccionar un paquete en `Clasificado` con ruta asignada, ejecutar el flujo de carga completo y verificar que: el estado pase por `En Carga` → `Listo para Despacho`, el registro de carga quede guardado con fecha/hora y responsable, y que al confirmar el vehículo completo se envíe la notificación `vehiculo_listo` al `Módulo de Gestión de Rutas`.
 
 **Acceptance Scenarios**:
 
-1. **Scenario**: Flujo completo de carga — Clasificado → En Carga → Listo para Despacho
-   - **Given** el paquete tiene estado `Clasificado`, tiene `id_ruta` e `id_transportador` registrados en la entidad Solicitud de Ruta, y el Coordinador de Despacho está autenticado.
-   - **When** el coordinador escanea el UUID del paquete al recogerlo de la zona de almacenamiento.
-   - **Then** el sistema actualiza el estado del paquete a `En Carga`, registra `timestamp_inicio_carga` UTC e `id_coordinador` en el Registro de Carga.
-   - **Luego**, cuando el coordinador ubica el paquete en el vehículo y confirma que vehículo, zona de destino y ruta son los correctos:
-   - **Then** el sistema actualiza el estado a `Listo para Despacho` y registra `timestamp_cargado` UTC.
+1. **Carga exitosa del paquete**
+   - **Given** el paquete está en `Clasificado` con ruta y transportador asignados.
+   - **When** el coordinador escanea el UUID al recogerlo de la zona de almacenamiento.
+   - **Then** el sistema cambia el estado a `En Carga` y registra fecha/hora de inicio e identificador del coordinador.
 
-2. **Scenario**: Confirmación de despacho del vehículo completo
-   - **Given** todos los paquetes asociados a una `id_ruta` específica han alcanzado el estado `Listo para Despacho`.
-   - **When** el Coordinador de Despacho verifica la lista de paquetes de la ruta y confirma que el vehículo está completamente cargado.
-   - **Then** el sistema emite la notificación `vehiculo_listo` al `Módulo de Gestión de Rutas` con el `id_ruta`, la lista de UUIDs cargados y el `timestamp_despacho` UTC. M2 procede a emitir el estado `En Tránsito` para cada paquete.
+2. **Confirmación de ubicación en vehículo**
+   - **Given** el coordinador verificó que vehículo, zona de destino y ruta son correctos.
+   - **When** confirma la ubicación del paquete en el vehículo.
+   - **Then** el sistema cambia el estado a `Listo para Despacho` y registra el timestamp de carga completada.
 
-3. **Scenario**: Bloqueo por estado incorrecto
-   - **Given** el paquete tiene un estado diferente a `Clasificado` (ej. `En Clasificación`, `Fuera de Tolerancia`, `Dañado`).
-   - **When** el coordinador intenta escanear el UUID para iniciar la carga.
-   - **Then** el sistema bloquea la operación y muestra un mensaje indicando el estado actual del paquete y que el estado requerido para iniciar la carga es `Clasificado`.
+3. **Despacho del vehículo**
+   - **Given** todos los paquetes de la ruta están en `Listo para Despacho`.
+   - **When** el coordinador confirma que el vehículo está listo para salir.
+   - **Then** el sistema envía la notificación `vehiculo_listo` al `Módulo de Gestión de Rutas` con los identificadores de ruta, lista de paquetes y timestamp de despacho.
 
-4. **Scenario**: Bloqueo por ruta no confirmada
-   - **Given** el paquete tiene estado `Clasificado` pero la entidad Solicitud de Ruta no tiene `id_ruta` ni `id_transportador` (M2 aún no respondió la solicitud emitida durante la admisión).
-   - **When** el coordinador intenta escanear el UUID.
-   - **Then** el sistema bloquea la operación, muestra el aviso `Ruta pendiente de asignación por el Módulo de Gestión de Rutas` e indica al coordinador que debe esperar la confirmación de M2 antes de proceder con la carga.
-
----
+4. **Bloqueo por estado no permitido**
+   - **Given** el paquete está en un estado diferente a `Clasificado` (por ejemplo `En Clasificación` o `Dañado`).
+   - **When** el coordinador intenta iniciar la carga.
+   - **Then** el sistema bloquea la operación con un mensaje indicando el estado actual y el motivo del bloqueo.
 
 ### Edge Cases
 
-- What happens when el coordinador detecta discrepancias entre el paquete escaneado y la ruta asignada (ej. zona de destino del paquete no coincide con la zona del vehículo)? El sistema bloquea la confirmación de carga al vehículo y genera una alerta de `Discrepancia de Ruta`. El coordinador debe escalar al Supervisor de Bodega para resolver antes de continuar.
-- What happens when dos coordinadores intentan cargar el mismo paquete simultáneamente? El sistema aplica control de concurrencia con prioridad FIFO: la primera operación recibida procesa el escaneo exitosamente. La segunda recibe el mensaje: `"El paquete ya está siendo procesado por [nombre del primer coordinador] desde [timestamp]."` No se permite la segunda operación.
-- What happens when la sesión del coordinador expira durante el proceso de carga (estado `En Carga`)? El paquete permanece en estado `En Carga` con el `id_coordinador` registrado. Al reautenticarse, el mismo coordinador puede continuar. Si transcurren más de 60 minutos en estado `En Carga` sin actividad, el sistema genera una alerta al Supervisor de Bodega.
-- What happens cuando un paquete en estado `En Carga` presenta un daño físico descubierto durante la manipulación? El coordinador no puede continuar con la carga. Debe reportar la novedad a través de [Gestionar Novedad de Paquete (MOD1-UC-008)](./MOD1-UC-008-Gestionar-Novedad-De-Paquete.md). El sistema revierte el estado a `Clasificado` y descuenta el paquete de los contadores del vehículo.
-- What happens when el `Módulo de Gestión de Rutas` no responde a la notificación `vehiculo_listo`? El sistema persiste el Registro de Carga del vehículo como completado localmente y encola la notificación para reintento automático. Genera una alerta visible al coordinador indicando que la confirmación con M2 está pendiente.
-- What happens when no todos los paquetes de una ruta llegan a estado `Listo para Despacho` antes del horario límite de despacho? El coordinador puede emitir la notificación `vehiculo_listo` de forma parcial, indicando los UUIDs efectivamente cargados. Los paquetes no cargados permanecen en su estado actual y son reasignados por M2 a la próxima ruta disponible.
+- **Dos coordinadores en el mismo paquete**: solo se registra la primera operación (FIFO). La segunda recibe un mensaje con el nombre del coordinador que ya lo está gestionando.
+- **Discrepancia de ruta o zona detectada durante la carga**: el coordinador debe escalar al Supervisor de Bodega antes de continuar.
+- **Daño detectado durante la manipulación**: el estado revierte a `Clasificado` y el coordinador escala al Controlador de Novedades.
+- **Sesión expirada antes de confirmar**: no se registra operación parcial. El paquete permanece en `En Carga`; se genera alerta al Supervisor si supera 60 minutos en ese estado.
+- **M2 no responde a `vehiculo_listo`**: el sistema encola la notificación para reintento automático y genera una alerta visible al coordinador.
 
-## Requirements *(mandatory)*
+---
+
+## Requirements
 
 ### Functional Requirements
 
-- **FR-001**: System MUST permitir gestionar la carga únicamente de paquetes en estado `Clasificado` que tengan `id_ruta` e `id_transportador` registrados en la entidad Solicitud de Ruta.
-- **FR-002**: System MUST actualizar el estado del paquete a `En Carga` al momento en que el coordinador escanea el UUID para recogerlo, registrando `timestamp_inicio_carga` (UTC) e `id_coordinador` en el Registro de Carga.
-- **FR-003**: System MUST actualizar el estado del paquete a `Listo para Despacho` cuando el coordinador confirme que el paquete está físicamente ubicado en el vehículo correcto y haya verificado que vehículo, zona de destino y ruta coinciden con los datos del paquete.
-- **FR-004**: System MUST registrar `timestamp_cargado` (UTC) e `id_coordinador` al momento en que el paquete alcanza el estado `Listo para Despacho`.
-- **FR-005**: System MUST recuperar el `id_transportador` desde la entidad Solicitud de Ruta asociada al UUID del paquete y persistirlo en el Registro de Carga. Este dato es requerido por [Informar Estado de Paquete (MOD1-UC-009)](./MOD1-UC-009-Informar-Estado-De-Paquete.md).
-- **FR-006**: System MUST impedir la gestión de carga duplicada sobre un mismo UUID usando control de concurrencia con prioridad FIFO.
-- **FR-007**: System MUST habilitar al Coordinador de Despacho para verificar la lista de paquetes asociados a una `id_ruta`, mostrando el estado de carga de cada uno (`Clasificado`, `En Carga`, `Listo para Despacho`).
-- **FR-008**: System MUST permitir al Coordinador de Despacho confirmar el despacho del vehículo cuando todos o un subconjunto de paquetes de la ruta hayan alcanzado `Listo para Despacho`. Al confirmar, el sistema emite la notificación `vehiculo_listo` al `Módulo de Gestión de Rutas` con `id_ruta`, lista de UUIDs cargados y `timestamp_despacho` UTC.
-- **FR-009**: System MUST encolar la notificación `vehiculo_listo` para reintento automático si M2 no responde, sin revertir ningún estado de paquete.
+- **FR-001**: Permitir iniciar la carga únicamente sobre paquetes en estado `Clasificado` con ruta y transportador asignados.
+- **FR-002**: Cambiar el estado a `En Carga` al escanear el UUID para recoger el paquete, registrando fecha/hora e identificador del coordinador.
+- **FR-003**: Cambiar el estado a `Listo para Despacho` al confirmar la ubicación en el vehículo, registrando el timestamp de carga completada.
+- **FR-004**: Impedir operaciones duplicadas sobre el mismo paquete (control FIFO).
+- **FR-005**: Permitir al coordinador visualizar todos los paquetes de una ruta con su estado de carga.
+- **FR-006**: Permitir confirmar el despacho del vehículo cuando todos (o un subconjunto aprobado) de los paquetes de la ruta están en `Listo para Despacho`.
+- **FR-007**: Enviar la notificación `vehiculo_listo` al `Módulo de Gestión de Rutas` con: identificador de ruta, identificador del coordinador, lista de UUIDs cargados y timestamp de despacho.
+- **FR-008**: Generar alerta al Supervisor de Bodega si un paquete permanece en `En Carga` por más de 60 minutos sin actividad.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities
 
-- **Paquete**: Transiciona `Clasificado` → `En Carga` → `Listo para Despacho` en este caso de uso.
-- **Solicitud de Ruta**: Fuente del `id_ruta` e `id_transportador`, creados en MOD1-UC-003.
-- **Registro de Carga**: `id` (PK), `uuid_paquete` (FK), `id_ruta` (FK), `id_coordinador` (FK), `id_transportador`, `timestamp_inicio_carga` (UTC), `timestamp_cargado` (UTC), `estado_notificacion_m2` (`Pendiente` | `Confirmado` | `Error`).
-- **Registro de Despacho de Vehículo**: `id` (PK), `id_ruta` (FK), `id_coordinador` (FK), `uuids_cargados` (lista), `timestamp_despacho` (UTC), `estado_notificacion_m2` (`Pendiente` | `Confirmado` | `Error`).
-- **Coordinador de Despacho**: Usuario con rol `Coordinador de Despacho`.
+- **Registro de Carga**: UUID del paquete, ruta, coordinador responsable, timestamps de inicio y fin de carga.
+- **Registro de Despacho de Vehículo**: identificador de ruta, coordinador, lista de paquetes cargados, timestamp de despacho.
 
-## Success Criteria *(mandatory)*
+---
 
-### Measurable Outcomes
+## Success Criteria
 
-- **SC-001**: El 100% de los paquetes gestionados deben generar un Registro de Carga con `uuid_paquete`, `id_transportador`, `timestamp_inicio_carga`, `timestamp_cargado` e `id_coordinador` completos.
-- **SC-002**: El sistema debe bloquear el 100% de los intentos de carga sobre paquetes en estados distintos a `Clasificado` o sin `id_ruta` disponible.
-- **SC-003**: El tiempo promedio del proceso de carga por paquete (escaneo + confirmación en vehículo) no debe superar los 3 minutos en el percentil 95.
+- **SC-001**: El 100% de los paquetes gestionados quedan registrados correctamente con fecha/hora y responsable.
+- **SC-002**: El 100% de los intentos de carga sobre paquetes en estados no permitidos son bloqueados.
+- **SC-003**: El tiempo de escaneo y confirmación de carga no supera los 3 minutos en el percentil 95.
