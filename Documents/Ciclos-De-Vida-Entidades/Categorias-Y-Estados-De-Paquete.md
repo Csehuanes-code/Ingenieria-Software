@@ -16,7 +16,6 @@ Las clasificaciones están organizadas en cuatro dimensiones:
 |---|---|---|
 | Tipo de Mercancía | `Estándar`, `Frágil`, `Peligroso` | MOD1-UC-002 |
 | Categoría de Carga | `Normal`, `Carga Especial` | MOD1-UC-002 |
-| Prioridad de Entrega | `Estándar`, `Urgente` | MOD1-UC-001 |
 | Estado Operativo | `Borrador`, `Recibido en Sede`, `En Clasificación`, `Clasificado`, `En Carga`, `Listo para Despacho`, `En Tránsito`, `Entregado`, `Dañado`, `Extraviado`, `Devolución`, `Fuera de Tolerancia`, `Excepción de Ruta`, `En Espera de Instrucción`, `Pendiente Sincronización Contable`, `Sincronizado Contablemente` | Varios |
 
 ---
@@ -114,47 +113,11 @@ Las clasificaciones están organizadas en cuatro dimensiones:
 
 ---
 
-## 4. Dimensión: Prioridad de Entrega
-
-### 4.1 Estándar
-
-**Condiciones de clasificación**: Todos los paquetes por defecto. El remitente no pagó tarifa de urgencia.
-
-**Características operativas**:
-- El tiempo estimado de entrega sigue la planificación normal de rutas del `Módulo de Gestión de Rutas`.
-- Sin recargo por prioridad.
-- Se asigna al primer vehículo disponible según la optimización de ruta normal.
-
-**Por qué es importante especificarlo**: Es el estado base que permite distinguir claramente los paquetes que requieren tratamiento de urgencia.
-
-**Restricciones de transición de estado**: Sin restricciones adicionales.
-
----
-
-### 4.2 Urgente
-
-**Condiciones de clasificación**: El remitente paga explícitamente la tarifa de urgencia (`tarifa_recargo_urgente`) durante la admisión **Y** el destino tiene cobertura de entrega express disponible (validado por el `Módulo de Gestión de Rutas` en la respuesta `ruta_asignada`). Si el destino no tiene cobertura express, el sistema informa al empleado y el paquete se clasifica como `Estándar` con devolución del recargo.
-
-**Características operativas**:
-- El payload enviado al `Módulo de Gestión de Rutas` incluye el campo `prioridad: "Urgente"`.
-- M2 asigna el primer vehículo disponible en la zona, con prioridad sobre los paquetes `Estándar`.
-- Se garantiza despacho en el mismo día hábil si la admisión ocurre antes de las 12:00 hrs.
-- Si la admisión ocurre después de las 12:00 hrs, se garantiza despacho en el primer turno del siguiente día hábil.
-- El tiempo estimado de entrega mostrado al cliente refleja la prioridad urgente.
-- Los paquetes `Urgente` tienen prioridad en la cola de carga del Coordinador de Despacho.
-
-**Por qué es importante especificarlo**: Permite al sistema y al `Módulo de Gestión de Rutas` distinguir entre paquetes que requieren asignación inmediata y los que siguen el flujo regular, evitando confusiones operativas y garantizando el nivel de servicio comprometido con el cliente.
-
-**Restricciones de transición de estado**:
-- Si el paquete no puede ser despachado en el mismo día hábil comprometido (por saturación de flota u otras causas), el sistema genera una alerta al Supervisor de Admisión para que notifique al cliente y aplique las compensaciones correspondientes.
-
----
-
-## 5. Dimensión: Estado Operativo
+## 4. Dimensión: Estado Operativo
 
 Los estados operativos representan la posición del paquete en el ciclo de vida del `Módulo de Gestión de Paquetes`. Cada estado tiene condiciones de entrada, actores responsables y restricciones de transición.
 
-### 5.1 Borrador
+### 4.1 Borrador
 
 **Condiciones de entrada**: El empleado abre el formulario de registro. UUID generado provisionalmente. Pesaje aún no completado.
 
@@ -164,7 +127,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.2 Recibido en Sede
+### 4.2 Recibido en Sede
 
 **Condiciones de entrada**: Registro confirmado con todos los campos obligatorios completos, pesaje exitoso completado y `gps_estado = Resuelto`. La solicitud de ruta al `Módulo de Gestión de Rutas` fue emitida (o está pendiente si `gps_estado = Pendiente GPS`).
 
@@ -174,7 +137,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.3 En Clasificación
+### 4.3 En Clasificación
 
 **Condiciones de entrada**: Zona de almacenamiento física asignada por el Almacenista en MOD1-UC-004. Los contadores de capacidad de la zona fueron actualizados.
 
@@ -184,7 +147,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.4 Clasificado
+### 4.4 Clasificado
 
 **Condiciones de entrada**: Zona de destino lógica asignada en MOD1-UC-006. El paquete tiene tanto zona de almacenamiento física como zona de destino lógica asignadas. El paquete está listo para ser embalado y confirmado para el andén.
 
@@ -194,7 +157,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.5 En Carga
+### 4.5 En Carga
 
 **Condiciones de entrada**: El Coordinador de Despacho escanea el UUID del paquete al recogerlo de la zona de almacenamiento para cargarlo al vehículo. El paquete debe tener `id_ruta` e `id_transportador` disponibles.
 
@@ -204,7 +167,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.6 Listo para Despacho
+### 4.6 Listo para Despacho
 
 **Condiciones de entrada**: El paquete fue verificado por el Coordinador de Despacho: vehículo, zona de destino y ruta correctos. El paquete está físicamente ubicado en el vehículo.
 
@@ -214,7 +177,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.7 En Tránsito
+### 4.7 En Tránsito
 
 **Condiciones de entrada**: El `Módulo de Gestión de Rutas` emitió el estado `En Tránsito` tras recibir la notificación `vehiculo_listo`. El paquete está en el vehículo en ruta hacia el destinatario.
 
@@ -224,7 +187,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.8 Entregado
+### 4.8 Entregado
 
 **Condiciones de entrada**: El `Módulo de Gestión de Rutas` confirma la entrega exitosa al destinatario, con firma digital (POD) obtenida.
 
@@ -234,7 +197,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.9 Dañado
+### 4.9 Dañado
 
 **Condiciones de entrada**: El Controlador de Novedades registra avería física con evidencia adjunta válida (JPEG/PNG/MP4, ≤ 10 MB) en MOD1-UC-008. Puede ocurrir desde `En Clasificación` en adelante.
 
@@ -244,7 +207,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.10 Extraviado
+### 4.10 Extraviado
 
 **Condiciones de entrada**: El Controlador de Novedades registra el extravío del paquete en MOD1-UC-008. Puede ocurrir desde `En Clasificación` en adelante.
 
@@ -254,7 +217,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.11 Devolución
+### 4.11 Devolución
 
 **Condiciones de entrada**: El `Módulo de Gestión de Rutas` retorna el paquete a la sede (dirección errónea, cliente no encontrado, rechazo de la entrega) y el Controlador de Novedades registra el re-ingreso en MOD1-UC-008.
 
@@ -271,7 +234,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.12 Fuera de Tolerancia
+### 4.12 Fuera de Tolerancia
 
 **Condiciones de entrada**: El sistema detecta una inconsistencia bloqueante durante el procesamiento en bodega. Subtipos:
 - `Fuera de Tolerancia — Peso`: diferencia > 10% entre `peso_kg` registrado en admisión y peso físico observado en bodega.
@@ -283,7 +246,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.13 Excepción de Ruta
+### 4.13 Excepción de Ruta
 
 **Condiciones de entrada**: El `Módulo de Gestión de Rutas` rechaza la solicitud de ruta por cobertura no disponible o campo inválido en el payload.
 
@@ -293,7 +256,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.14 En Espera de Instrucción
+### 4.14 En Espera de Instrucción
 
 **Condiciones de entrada**: El análisis post-devolución determina que el paquete requiere instrucción explícita del remitente antes de definir el próximo paso (ej. re-despacho con nueva dirección, reclamar el paquete en sede, autorizar destrucción).
 
@@ -303,7 +266,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.15 Pendiente Sincronización Contable
+### 4.15 Pendiente Sincronización Contable
 
 **Condiciones de entrada**: MOD1-UC-009 fue invocado pero el `Módulo de Gestión de Finanzas` aún no respondió con ACK.
 
@@ -313,7 +276,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-### 5.16 Sincronizado Contablemente
+### 4.16 Sincronizado Contablemente
 
 **Condiciones de entrada**: El `Módulo de Gestión de Finanzas` confirmó (ACK) la recepción del estado final del paquete y ejecutó las acciones financieras correspondientes.
 
@@ -323,7 +286,7 @@ Los estados operativos representan la posición del paquete en el ciclo de vida 
 
 ---
 
-## 6. Matriz de Restricciones de Transición por Rol
+## 5. Matriz de Restricciones de Transición por Rol
 
 | Estado actual | Almacenista | Coordinador de Despacho | Controlador de Novedades | Empleado de Envío y Recepción | Sistema (automático) |
 |---|---|---|---|---|---|

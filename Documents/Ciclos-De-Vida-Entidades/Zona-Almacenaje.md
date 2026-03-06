@@ -42,7 +42,6 @@ Todas las zonas comparten el siguiente modelo de datos:
 **Paquetes admitidos**:
 - `tipo_mercancia = Estándar` únicamente.
 - `categoria_carga = Normal` o `Carga Especial` (si el espacio es suficiente y hay equipo de carga disponible).
-- Cualquier `prioridad` (`Estándar` o `Urgente`).
 
 **Paquetes NO admitidos**:
 - `tipo_mercancia = Frágil` → el sistema bloquea la asignación.

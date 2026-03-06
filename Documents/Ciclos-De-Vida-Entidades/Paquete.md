@@ -14,7 +14,7 @@ Un paquete nace cuando el Empleado de Envío y Recepción inicia su registro y c
 - `Módulo de Gestión de Rutas` (M2): recibe la solicitud de ruta durante la admisión, asigna vehículo, ruta y tiempo estimado, y emite los estados `En Tránsito` y `Entregado`.
 - `Módulo de Gestión de Finanzas` (M3): recibe el estado final del paquete para ejecutar pagos o cobros.
 
-**Categorías que afectan el ciclo de vida**: Un paquete puede tener simultáneamente categorías de tipo de mercancía (`Estándar`, `Frágil`, `Peligroso`), categoría de carga (`Normal`, `Carga Especial`) y prioridad (`Estándar`, `Urgente`). Estas categorías determinan las zonas de almacenamiento válidas, los vehículos elegibles y los recargos tarifarios. Ver [Categorías y estados del paquete](./Categorias-Y-Estados-De-Paquete.md) para la definición completa de cada categoría.
+**Categorías que afectan el ciclo de vida**: Un paquete puede tener simultáneamente categorías de tipo de mercancía (`Estándar`, `Frágil`, `Peligroso`) y categoría de carga (`Normal`, `Carga Especial`). Estas categorías determinan las zonas de almacenamiento válidas, los vehículos elegibles y los recargos tarifarios. Ver [MOD1-CATEGORIAS-Y-ESTADOS-PAQUETE.md](./MOD1-CATEGORIAS-Y-ESTADOS-PAQUETE.md) para la definición completa de cada categoría.
 
 ---
 
@@ -24,7 +24,7 @@ Un paquete nace cuando el Empleado de Envío y Recepción inicia su registro y c
 Borrador → Recibido en Sede → En Clasificación → Clasificado → En Carga → Listo para Despacho → En Tránsito → Entregado → Pendiente Sincronización Contable → Sincronizado Contablemente
 ```
 
-El evento [solicitar ruta](../Specs/MOD1-UC-003-Solicitar-Ruta-De-Paquete.md) al `Módulo de Gestión de Rutas` se emite **durante la admisión** (Etapa 1), inmediatamente tras el pesaje exitoso, cuando el paquete está en estado `Recibido en Sede` y tiene todos los datos requeridos por el Contrato de Integración.
+El evento `solicitar_ruta` al `Módulo de Gestión de Rutas` se emite **durante la admisión** (Etapa 1), inmediatamente tras el pesaje exitoso, cuando el paquete está en estado `Recibido en Sede` y tiene todos los datos requeridos por el Contrato de Integración.
 
 ---
 
@@ -34,7 +34,7 @@ El evento [solicitar ruta](../Specs/MOD1-UC-003-Solicitar-Ruta-De-Paquete.md) al
 |---|---|---|
 | `Borrador` | Registro iniciado pero no confirmado; pesaje pendiente | Sistema (auto, al abrir formulario) |
 | `Recibido en Sede` | Paquete admitido, pesado y con solicitud de ruta emitida | Empleado de Envío y Recepción |
-| `Pendiente GPS` | Dirección sin coordenadas GPS válidas; [solicitar ruta](../Specs/MOD1-UC-003-Solicitar-Ruta-De-Paquete.md) bloqueado | Sistema (fallo Google Maps Geocoding API) |
+| `Pendiente GPS` | Dirección sin coordenadas GPS válidas; `solicitar_ruta` bloqueado | Sistema (fallo Google Maps Geocoding API) |
 | `Fuera de Tolerancia` | Inconsistencia bloqueante en bodega (subtipo: `Peso` o `Sin GPS`) | Sistema / Almacenista |
 | `En Clasificación` | Zona de almacenamiento física asignada en bodega | Almacenista |
 | `Clasificado` | Zona de destino lógica asignada; paquete listo para ser cargado | Almacenista |
@@ -61,7 +61,7 @@ El evento [solicitar ruta](../Specs/MOD1-UC-003-Solicitar-Ruta-De-Paquete.md) al
 ┌─────────────────────────────────────────────────────────────────────┐
 │ ETAPA 1 — ADMISIÓN                                                  │
 │ Actor: Empleado de Envío y Recepción                                │
-│ Casos de uso: MOD1-UC-001 + MOD1-UC-002 + MOD1-UC-003               │
+│ Casos de uso: MOD1-UC-001 + MOD1-UC-002 + MOD1-UC-003              │
 └─────────────────────────────────────────────────────────────────────┘
     │
     ├──[Formulario abierto, UUID generado]──► Borrador
