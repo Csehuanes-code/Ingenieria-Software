@@ -46,7 +46,7 @@ La solicitud se emite idealmente una vez por ciclo de vida. Las excepciones son:
 ### Functional Requirements
 
 - **FR-001**: Construir y enviar el payload al `Módulo de Gestión de Rutas` con: UUID del paquete, peso, volumen, tipo de mercancía, dirección de destino, coordenadas GPS, método de pago y valor declarado.
-- **FR-002**: Registrar cada intento con el payload, timestamp, resultado (asignada / rechazada / pendiente), identificadores de ruta y transportador, fecha estimada y motivo de rechazo cuando aplique.
+- **FR-002**: Registrar cada intento con el payload, timestamp, resultado (asignada / rechazada / pendiente), fecha estimada.
 - **FR-003**: Mostrar la fecha estimada al cliente al recibirla. Si está pendiente, mostrar la leyenda `Fecha de entrega sujeta a confirmación`.
 - **FR-004**: Encolar el evento para reintento automático si M2 no responde, sin bloquear el flujo del paquete.
 - **FR-005**: Bloquear el envío si el GPS del paquete está pendiente.
@@ -54,7 +54,7 @@ La solicitud se emite idealmente una vez por ciclo de vida. Las excepciones son:
 
 ### Key Entities
 
-- **Solicitud de Ruta**: payload enviado, timestamp, resultado de la respuesta, identificadores de ruta y transportador, fecha estimada, motivo de rechazo, número de intento.
+- **Solicitud de Ruta**: payload enviado, timestamp, resultado de la respuesta, fecha estimada, número de intento.
 
 ---
 
