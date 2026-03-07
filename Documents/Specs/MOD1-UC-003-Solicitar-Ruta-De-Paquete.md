@@ -22,7 +22,7 @@ Como Sistema, necesito enviar al `Módulo de Gestión de Rutas` la solicitud de 
 2. **M2 rechaza por cobertura no disponible**
    - **Given** el `Módulo de Gestión de Rutas` responde que el destino está fuera de cobertura.
    - **When** el sistema recibe el rechazo.
-   - **Then** el paquete pasa a `Excepción de Ruta`, se notifica al Supervisor de Admisión y se habilita la corrección de dirección para reintentar.
+   - **Then** el sistema bloquea la creación de la guía, muestra una alerta de "Destino no disponible" y notifica al cliente en ese instante que su paquete no puede ser procesado para esa ubicación.
 
 3. **M2 no responde**
    - **Given** el `Módulo de Gestión de Rutas` no responde dentro del tiempo configurado.
