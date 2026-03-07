@@ -33,11 +33,10 @@ Como Sistema, necesito enviar al `Módulo de Gestión de Rutas` la solicitud de 
 
 La solicitud se emite idealmente una vez por ciclo de vida. Las excepciones son:
 
-| Escenario | Quién gestiona |
-|---|---|
-| Rechazo por cobertura — corrección de dirección | Supervisor de Admisión |
-| Diferencia significativa de datos físicos en bodega, corregida y aprobada | Supervisor de Bodega |
-| Cambio de dirección autorizado antes del almacenaje | Supervisor de Admisión |
+| Escenario |
+|---|
+| Diferencia significativa de datos físicos en bodega, corregida y aprobada |
+| Cambio de dirección autorizado antes del almacenaje | 
 
 ### Condiciones de Red
 
