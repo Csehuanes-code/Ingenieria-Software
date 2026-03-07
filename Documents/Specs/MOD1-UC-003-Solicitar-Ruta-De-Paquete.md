@@ -42,7 +42,7 @@ La solicitud se emite idealmente una vez por ciclo de vida. Las excepciones son:
 
 - **GPS pendiente**: el sistema bloquea el envío hasta que las coordenadas estén resueltas.
 - **Datos físicos corregidos en bodega**: si la corrección afecta el payload, se re-emite la solicitud y se notifica al remitente con los nuevos tiempos estimados.
-- **Novedad tras emitir fecha estimada**: se genera una notificación interna para que atención al cliente informe al destinatario sobre la anulación o cambio de fecha.
+- **Novedad tras emitir fecha estimada**: se genera una notificación interna para que se informe al destinatario sobre la anulación o cambio de fecha.
 
 ---
 
@@ -55,8 +55,7 @@ La solicitud se emite idealmente una vez por ciclo de vida. Las excepciones son:
 - **FR-003**: Mostrar la fecha estimada al cliente al recibirla. Si está pendiente, mostrar la leyenda `Fecha de entrega sujeta a confirmación`.
 - **FR-004**: Encolar el evento para reintento automático si M2 no responde, sin bloquear el flujo del paquete.
 - **FR-005**: Bloquear el envío si el GPS del paquete está pendiente.
-- **FR-006**: Permitir la re-emisión únicamente en los escenarios definidos, con autorización del Supervisor correspondiente.
-- **NFR-001**: El ciclo de solicitud y respuesta debe completarse en < 5 s bajo condiciones normales de red.
+- **FR-006**: Permitir la re-emisión únicamente en los escenarios definidos.
 
 ### Key Entities
 
@@ -67,5 +66,5 @@ La solicitud se emite idealmente una vez por ciclo de vida. Las excepciones son:
 ## Success Criteria
 
 - **SC-001**: El 100% de los paquetes con admisión exitosa y GPS resuelto generan un intento de solicitud de forma inmediata.
-- **SC-002**: El 0% de las solicitudes se envían con campos faltantes respecto al contrato de integración.
-- **SC-003**: El ciclo de solicitud y respuesta se completa en < 5 s en el percentil 95 bajo condiciones normales.
+- **SC-002**: El 0% de las solicitudes se envían con campos faltantes.
+- **SC-003**: El ciclo de solicitud y respuesta se completa en < 20 s.
