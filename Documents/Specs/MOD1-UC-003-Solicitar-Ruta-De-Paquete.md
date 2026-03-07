@@ -19,12 +19,7 @@ Como Sistema, necesito enviar al `Módulo de Gestión de Rutas` la solicitud de 
    - **When** el caso de uso es invocado automáticamente tras [Registrar Admisión de Paquete(MOD1-UC-001)](./MOD1-UC-001-Registrar-Admision-De-Paquete.md) + [Procesar Pesaje y Dimensiones(MOD1-UC-002)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md).
    - **Then** el sistema envía el payload, persiste la respuesta (fecha estimada) y muestra el tiempo estimado al cliente.
 
-2. **M2 rechaza por cobertura no disponible**
-   - **Given** el `Módulo de Gestión de Rutas` responde que el destino está fuera de cobertura.
-   - **When** el sistema recibe el rechazo.
-   - **Then** el sistema bloquea la creación de la guía, muestra una alerta de "Destino no disponible" y notifica al cliente en ese instante que su paquete no puede ser procesado para esa ubicación.
-
-3. **M2 no responde**
+2. **M2 no responde**
    - **Given** el `Módulo de Gestión de Rutas` no responde dentro del tiempo configurado.
    - **When** el sistema detecta el timeout.
    - **Then** encola el evento para reintento automático y el cliente recibe la leyenda `Fecha de entrega sujeta a confirmación`.
