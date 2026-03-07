@@ -67,5 +67,5 @@ Como Empleado de Envío y Recepción, necesito registrar los datos del remitente
 
 - **SC-001**: El 100% de los paquetes confirmados tienen UUID único y datos completos de remitente y destinatario.
 - **SC-002**: El 95% de las direcciones se resuelven vía Google Maps en tiempo real (< 5 s).
-- **SC-003**: El 100% de los registros exitosos con GPS resuelto emiten `solicitar_ruta` de forma inmediata.
+- **SC-003**: El 100% de los registros exitosos con GPS resuelto emiten [Solicitar ruta Paquete(MOD1-UC-003)](./MOD1-UC-003-Solicitar-Ruta-De-Paquete.md) de forma inmediata.
 - **SC-004**: El 100% de los `Borrador` con más de 30 minutos se eliminan en cada ejecución del job.
