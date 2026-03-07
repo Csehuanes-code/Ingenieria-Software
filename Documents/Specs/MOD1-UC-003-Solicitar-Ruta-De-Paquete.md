@@ -10,16 +10,21 @@ Como Sistema, necesito enviar al `Módulo de Gestión de Rutas` la solicitud de 
 
 **Why this priority**: Sin este evento el `Módulo de Gestión de Rutas` no puede planificar rutas ni seleccionar vehículos. Se emite en estado `Recibido en Sede`, con GPS resuelto y datos completos. Es disparado automáticamente por la combinación de [Registrar Admisión de Paquete(MOD1-UC-001)](./MOD1-UC-001-Registrar-Admision-De-Paquete.md) y [Procesar Pesaje y Dimensiones(MOD1-UC-002)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md).
 
-**Independent Test**: Completar admisión y pesaje, y verificar en logs que el payload llegó al `Módulo de Gestión de Rutas`, se recibió una respuesta con fecha estimada, y que esa información se mostró al cliente.
+**Independent Test**: Completar admisión y pesaje, y verificar en logs que el payload llegó al `Módulo de Gestión de Rutas`, se recibió una respuesta con identificador de ruta, transportador y fecha estimada, y que esa información se mostró al cliente.
 
 **Acceptance Scenarios**:
 
 1. **Solicitud exitosa**
    - **Given** el paquete está en `Recibido en Sede` con GPS resuelto y todos los datos completos.
    - **When** el caso de uso es invocado automáticamente tras [Registrar Admisión de Paquete(MOD1-UC-001)](./MOD1-UC-001-Registrar-Admision-De-Paquete.md) + [Procesar Pesaje y Dimensiones(MOD1-UC-002)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md).
-   - **Then** el sistema envía el payload, persiste la respuesta (fecha estimada) y muestra el tiempo estimado al cliente.
+   - **Then** el sistema envía el payload, persiste la respuesta (ruta, transportador y fecha estimada) y muestra el tiempo estimado al cliente.
 
-2. **M2 no responde**
+2. **M2 rechaza por cobertura no disponible**
+   - **Given** el `Módulo de Gestión de Rutas` responde que el destino está fuera de cobertura.
+   - **When** el sistema recibe el rechazo.
+   - **Then** el sistema bloquea la creación de la guía, muestra una alerta de "Destino no disponible" y notifica al cliente en ese instante que su paquete no puede ser procesado para esa ubicación.
+
+3. **M2 no responde**
    - **Given** el `Módulo de Gestión de Rutas` no responde dentro del tiempo configurado.
    - **When** el sistema detecta el timeout.
    - **Then** encola el evento para reintento automático y el cliente recibe la leyenda `Fecha de entrega sujeta a confirmación`.
@@ -46,7 +51,7 @@ La solicitud se emite idealmente una vez por ciclo de vida. Las excepciones son:
 ### Functional Requirements
 
 - **FR-001**: Construir y enviar el payload al `Módulo de Gestión de Rutas` con: UUID del paquete, peso, volumen, tipo de mercancía, dirección de destino, coordenadas GPS, método de pago y valor declarado.
-- **FR-002**: Registrar cada intento con el payload, timestamp, resultado (asignada / rechazada / pendiente), fecha estimada.
+- **FR-002**: Registrar cada intento con el payload, timestamp, resultado (asignada / rechazada / pendiente), identificadores de ruta y transportador, fecha estimada y motivo de rechazo cuando aplique.
 - **FR-003**: Mostrar la fecha estimada al cliente al recibirla. Si está pendiente, mostrar la leyenda `Fecha de entrega sujeta a confirmación`.
 - **FR-004**: Encolar el evento para reintento automático si M2 no responde, sin bloquear el flujo del paquete.
 - **FR-005**: Bloquear el envío si el GPS del paquete está pendiente.
@@ -54,7 +59,7 @@ La solicitud se emite idealmente una vez por ciclo de vida. Las excepciones son:
 
 ### Key Entities
 
-- **Solicitud de Ruta**: payload enviado, timestamp, resultado de la respuesta, fecha estimada, número de intento.
+- **Solicitud de Ruta**: payload enviado, timestamp, resultado de la respuesta, identificadores de ruta y transportador, fecha estimada, motivo de rechazo, número de intento.
 
 ---
 
