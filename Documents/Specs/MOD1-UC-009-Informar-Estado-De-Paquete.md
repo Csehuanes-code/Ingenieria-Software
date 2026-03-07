@@ -8,7 +8,7 @@
 
 Como Sistema, necesito enviar al `Módulo de Gestión de Finanzas` el estado final del paquete junto con el valor declarado y las evidencias, para que ejecute automáticamente los pagos, descuentos o cobros de póliza correspondientes.
 
-**Why this priority**: Es el cierre contable del ciclo. Sin este informe el `Módulo de Gestión de Finanzas` no puede distinguir entre una entrega exitosa, un daño o una devolución, bloqueando la liquidación de transportadores y el flujo de caja. Es invocado por [MOD1-UC-008](./MOD1-UC-008-Gestionar-Novedad-De-Paquete.md) y también de forma automática al recibir el estado `Entregado` desde el `Módulo de Gestión de Rutas`.
+**Why this priority**: Es el cierre contable del ciclo. Sin este informe el `Módulo de Gestión de Finanzas` no puede distinguir entre una entrega exitosa, un daño o una devolución, bloqueando la liquidación de transportadores y el flujo de caja. Es invocado por [Gestionar Novedad de Paquete(MOD1-UC-008)](./MOD1-UC-008-Gestionar-Novedad-De-Paquete.md) y también de forma automática al recibir el estado `Entregado` desde el `Módulo de Gestión de Rutas`.
 
 **Independent Test**: Simular un cambio a `Entregado` o `Dañado` y verificar en logs que el `Módulo de Gestión de Finanzas` recibió el payload con UUID, estado final y valor declarado, y que el sistema registró el ACK de confirmación.
 
@@ -20,7 +20,7 @@ Como Sistema, necesito enviar al `Módulo de Gestión de Finanzas` el estado fin
    - **Then** construye el payload con UUID, estado, valor declarado e identificador del transportador, lo envía al `Módulo de Gestión de Finanzas` y registra el ACK.
 
 2. **Novedad económica (Dañado o Extraviado)**
-   - **Given** se registró una novedad de tipo `Dañado` o `Extraviado` en [MOD1-UC-008](./MOD1-UC-008-Gestionar-Novedad-De-Paquete.md).
+   - **Given** se registró una novedad de tipo `Dañado` o `Extraviado` en [Gestionar Novedad de Paquete(MOD1-UC-008)](./MOD1-UC-008-Gestionar-Novedad-De-Paquete.md).
    - **When** este caso de uso es invocado por la gestión de novedad.
    - **Then** envía al `Módulo de Gestión de Finanzas` el payload con estado, valor declarado y referencia a la evidencia, para que aplique descuentos al transportador o ejecute el cobro de la póliza.
 

@@ -8,7 +8,7 @@
 
 Como Almacenista, necesito asignar a cada paquete su zona de destino —una agrupación lógica basada en la proximidad geográfica del destinatario— para que el `Módulo de Gestión de Rutas` pueda optimizar la consolidación de carga por vehículo.
 
-**Why this priority**: Reduce los tiempos de carga y mejora la eficiencia del algoritmo de rutas. Es invocado por [MOD1-UC-004](./MOD1-UC-004-Preparar-Paquete-Para-Almacenaje.md) una vez que el paquete está en bodega.
+**Why this priority**: Reduce los tiempos de carga y mejora la eficiencia del algoritmo de rutas. Es invocado por [Preparar Paquete para Almacenaje(MOD1-UC-004)](./MOD1-UC-004-Preparar-Paquete-Para-Almacenaje.md) una vez que el paquete está en bodega.
 
 **Independent Test**: Con un paquete en `En Clasificación`, verificar que el sistema calcule la zona correcta con el radio configurado (por defecto 5 km), genere la etiqueta digital de zona y actualice el estado a `Clasificado`.
 

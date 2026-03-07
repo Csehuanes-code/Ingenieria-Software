@@ -8,7 +8,7 @@
 
 Como Empleado de Envío y Recepción, necesito capturar el peso y las dimensiones del paquete para calcular el precio de envío y proveer al `Módulo de Gestión de Rutas` los datos físicos que necesita para asignar el vehículo correcto.
 
-**Why this priority**: Una medición incorrecta afecta el precio cobrado y puede comprometer la seguridad de los vehículos. Es invocado obligatoriamente por [MOD1-UC-001](./MOD1-UC-001-Registrar-Admision-De-Paquete.md). El precio calculado se muestra al cliente durante la admisión y queda fijo al confirmar.
+**Why this priority**: Una medición incorrecta afecta el precio cobrado y puede comprometer la seguridad de los vehículos. Es invocado obligatoriamente por [Registrar Admisión de Paquete(MOD1-UC-001)](./MOD1-UC-001-Registrar-Admision-De-Paquete.md). El precio calculado se muestra al cliente durante la admisión y queda fijo al confirmar.
 
 **Independent Test**: Ingresar peso y dimensiones, y verificar que el sistema calcule volumen, peso volumétrico y precio correctamente, emita las alertas según el tipo de mercancía y bloquee valores inválidos.
 

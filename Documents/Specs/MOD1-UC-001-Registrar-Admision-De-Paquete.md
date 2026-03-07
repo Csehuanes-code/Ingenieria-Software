@@ -16,8 +16,8 @@ Como Empleado de Envío y Recepción, necesito registrar los datos del remitente
 
 1. **Registro exitoso**
    - **Given** el empleado está autenticado y el cliente entrega el paquete con sus datos.
-   - **When** el empleado llena el formulario, el GPS resuelve coordenadas vía Google Maps Geocoding API, se ejecuta [MOD1-UC-002](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md) exitosamente y se confirma el registro.
-   - **Then** el sistema genera un UUID único, registra fecha/hora y sede automáticamente, actualiza el estado a `Recibido en Sede`, genera la etiqueta digital e invoca [MOD1-UC-003](./MOD1-UC-003-Solicitar-Ruta-De-Paquete.md).
+   - **When** el empleado llena el formulario, el GPS resuelve coordenadas vía Google Maps Geocoding API, se ejecuta [Procesar Pesaje y Dimensiones(MOD1-UC-002)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md) exitosamente y se confirma el registro.
+   - **Then** el sistema genera un UUID único, registra fecha/hora y sede automáticamente, actualiza el estado a `Recibido en Sede`, genera la etiqueta digital e invoca [Solicitar Ruta de Paquete(MOD1-UC-003)](./MOD1-UC-003-Solicitar-Ruta-De-Paquete.md).
 
 2. **Fallo de geolocalización**
    - **Given** la Google Maps Geocoding API no responde (timeout > 5 s).
@@ -49,9 +49,9 @@ Como Empleado de Envío y Recepción, necesito registrar los datos del remitente
 - **FR-009**: Capturar como obligatorios:
   - **Remitente**: tipo y número de documento, nombre completo, teléfono.
   - **Destinatario**: tipo y número de documento, nombre completo, teléfono, correo electrónico, dirección de entrega.
-- **FR-010**: Invocar [MOD1-UC-002](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md) como parte obligatoria. Sin pesaje exitoso no se puede confirmar el registro.
+- **FR-010**: Invocar [Procesar Pesaje y Dimensiones(MOD1-UC-002)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md) como parte obligatoria. Sin pesaje exitoso no se puede confirmar el registro.
 - **FR-011**: Ejecutar un job cada 15 minutos que elimine registros en `Borrador` con más de 30 minutos de inactividad.
-- **FR-012**: Invocar [MOD1-UC-003](./MOD1-UC-003-Solicitar-Ruta-De-Paquete.md) automáticamente al confirmar el registro, siempre que el GPS esté resuelto.
+- **FR-012**: Invocar [Solicitar Ruta de Paquete(MOD1-UC-003)](./MOD1-UC-003-Solicitar-Ruta-De-Paquete.md) automáticamente al confirmar el registro, siempre que el GPS esté resuelto.
 
 ### Key Entities
 

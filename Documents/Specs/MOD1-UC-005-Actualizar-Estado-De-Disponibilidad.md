@@ -27,7 +27,7 @@ Como Almacenista, necesito confirmar que un paquete ya fue embalado y está list
 3. **Daño detectado durante inspección visual**
    - **Given** el almacenista detecta un daño físico al revisar el paquete.
    - **When** no puede confirmarse la disponibilidad.
-   - **Then** el almacenista debe registrar la incidencia a través de [MOD1-UC-008](./MOD1-UC-008-Gestionar-Novedad-De-Paquete.md). El estado no avanza a `Listo para Despacho`.
+   - **Then** el almacenista debe registrar la incidencia a través de [Gestionar Novedad de Paquete(MOD1-UC-008)](./MOD1-UC-008-Gestionar-Novedad-De-Paquete.md). El estado no avanza a `Listo para Despacho`.
 
 ### Edge Cases
 

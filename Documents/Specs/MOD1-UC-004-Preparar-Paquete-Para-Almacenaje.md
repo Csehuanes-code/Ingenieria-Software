@@ -10,14 +10,14 @@ Como Almacenista, necesito asignar el paquete a su zona en bodega para iniciar s
 
 **Why this priority**: Es la primera acción en bodega. La solicitud de ruta ya fue emitida durante la admisión; la responsabilidad aquí es la correcta organización física.
 
-**Independent Test**: Escanear el UUID de un paquete en `Recibido en Sede` con datos completos, confirmar la zona y verificar que el estado cambie a `En Clasificación`, los contadores de la zona se actualicen y se invoque [MOD1-UC-006](./MOD1-UC-006-Clasificar-Paquete-Por-Zona-Destino.md).
+**Independent Test**: Escanear el UUID de un paquete en `Recibido en Sede` con datos completos, confirmar la zona y verificar que el estado cambie a `En Clasificación`, los contadores de la zona se actualicen y se invoque [Clasificar Paquete por Zona de Destino(MOD1-UC-006)](./MOD1-UC-006-Clasificar-Paquete-Por-Zona-Destino.md).
 
 **Acceptance Scenarios**:
 
 1. **Asignación exitosa**
    - **Given** el paquete está en `Recibido en Sede` con GPS resuelto y datos físicos completos.
    - **When** el almacenista escanea el UUID y confirma la zona sugerida.
-   - **Then** el sistema registra la zona, actualiza los contadores de capacidad (peso, volumen y cantidad de paquetes), cambia el estado a `En Clasificación` e invoca [MOD1-UC-006](./MOD1-UC-006-Clasificar-Paquete-Por-Zona-Destino.md).
+   - **Then** el sistema registra la zona, actualiza los contadores de capacidad (peso, volumen y cantidad de paquetes), cambia el estado a `En Clasificación` e invoca [Clasificar Paquete por Zona de Destino(MOD1-UC-006)](./MOD1-UC-006-Clasificar-Paquete-Por-Zona-Destino.md).
 
 2. **Alerta de manejo especial**
    - **Given** el paquete es de tipo `Frágil` o `Peligroso`.
@@ -46,7 +46,7 @@ Como Almacenista, necesito asignar el paquete a su zona en bodega para iniciar s
 - **FR-005**: Bloquear paquetes con GPS pendiente y marcarlos como `Fuera de Tolerancia — Sin GPS`.
 - **FR-006**: Actualizar atómicamente los tres contadores de la zona (peso acumulado, volumen acumulado y cantidad de paquetes) al asignar o retirar un paquete.
 - **FR-007**: Emitir alerta de zona saturada y sugerir zona de contingencia al alcanzar cualquiera de los límites configurados.
-- **FR-008**: Invocar [MOD1-UC-006](./MOD1-UC-006-Clasificar-Paquete-Por-Zona-Destino.md) automáticamente al confirmar el cambio a `En Clasificación`.
+- **FR-008**: Invocar [Clasificar Paquete por Zona de Destino(MOD1-UC-006)](./MOD1-UC-006-Clasificar-Paquete-Por-Zona-Destino.md) automáticamente al confirmar el cambio a `En Clasificación`.
 
 ### Key Entities
 

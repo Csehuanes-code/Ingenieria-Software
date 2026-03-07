@@ -8,7 +8,7 @@
 
 Como Sistema, necesito enviar al `Módulo de Gestión de Rutas` la solicitud de ruta inmediatamente tras la admisión y pesaje exitosos, para reservar un vehículo y proveer al cliente un tiempo estimado de entrega desde el primer contacto.
 
-**Why this priority**: Sin este evento el `Módulo de Gestión de Rutas` no puede planificar rutas ni seleccionar vehículos. Se emite en estado `Recibido en Sede`, con GPS resuelto y datos completos. Es disparado automáticamente por la combinación de [MOD1-UC-001](./MOD1-UC-001-Registrar-Admision-De-Paquete.md) y [MOD1-UC-002](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md).
+**Why this priority**: Sin este evento el `Módulo de Gestión de Rutas` no puede planificar rutas ni seleccionar vehículos. Se emite en estado `Recibido en Sede`, con GPS resuelto y datos completos. Es disparado automáticamente por la combinación de [Registrar Admisión de Paquete(MOD1-UC-001)](./MOD1-UC-001-Registrar-Admision-De-Paquete.md) y [Procesar Pesaje y Dimensiones(MOD1-UC-002)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md).
 
 **Independent Test**: Completar admisión y pesaje, y verificar en logs que el payload llegó al `Módulo de Gestión de Rutas`, se recibió una respuesta con identificador de ruta, transportador y fecha estimada, y que esa información se mostró al cliente.
 
@@ -16,7 +16,7 @@ Como Sistema, necesito enviar al `Módulo de Gestión de Rutas` la solicitud de 
 
 1. **Solicitud exitosa**
    - **Given** el paquete está en `Recibido en Sede` con GPS resuelto y todos los datos completos.
-   - **When** el caso de uso es invocado automáticamente tras [MOD1-UC-001](./MOD1-UC-001-Registrar-Admision-De-Paquete.md) + [MOD1-UC-002](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md).
+   - **When** el caso de uso es invocado automáticamente tras [Registrar Admisión de Paquete(MOD1-UC-001)](./MOD1-UC-001-Registrar-Admision-De-Paquete.md) + [Procesar Pesaje y Dimensiones(MOD1-UC-002)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md).
    - **Then** el sistema envía el payload, persiste la respuesta (ruta, transportador y fecha estimada) y muestra el tiempo estimado al cliente.
 
 2. **M2 rechaza por cobertura no disponible**
