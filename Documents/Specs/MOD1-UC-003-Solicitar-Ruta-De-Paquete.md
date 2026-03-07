@@ -10,14 +10,14 @@ Como Sistema, necesito enviar al `Módulo de Gestión de Rutas` la solicitud de 
 
 **Why this priority**: Sin este evento el `Módulo de Gestión de Rutas` no puede planificar rutas ni seleccionar vehículos. Se emite en estado `Recibido en Sede`, con GPS resuelto y datos completos. Es disparado automáticamente por la combinación de [Registrar Admisión de Paquete(MOD1-UC-001)](./MOD1-UC-001-Registrar-Admision-De-Paquete.md) y [Procesar Pesaje y Dimensiones(MOD1-UC-002)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md).
 
-**Independent Test**: Completar admisión y pesaje, y verificar en logs que el payload llegó al `Módulo de Gestión de Rutas`, se recibió una respuesta con identificador de ruta, fecha estimada, y que esa información se mostró al cliente.
+**Independent Test**: Completar admisión y pesaje, y verificar en logs que el payload llegó al `Módulo de Gestión de Rutas`, se recibió una respuesta con fecha estimada, y que esa información se mostró al cliente.
 
 **Acceptance Scenarios**:
 
 1. **Solicitud exitosa**
    - **Given** el paquete está en `Recibido en Sede` con GPS resuelto y todos los datos completos.
    - **When** el caso de uso es invocado automáticamente tras [Registrar Admisión de Paquete(MOD1-UC-001)](./MOD1-UC-001-Registrar-Admision-De-Paquete.md) + [Procesar Pesaje y Dimensiones(MOD1-UC-002)](./MOD1-UC-002-Procesar-Pesaje-Y-Dimensiones.md).
-   - **Then** el sistema envía el payload, persiste la respuesta (ruta y fecha estimada) y muestra el tiempo estimado al cliente.
+   - **Then** el sistema envía el payload, persiste la respuesta (fecha estimada) y muestra el tiempo estimado al cliente.
 
 2. **M2 rechaza por cobertura no disponible**
    - **Given** el `Módulo de Gestión de Rutas` responde que el destino está fuera de cobertura.
