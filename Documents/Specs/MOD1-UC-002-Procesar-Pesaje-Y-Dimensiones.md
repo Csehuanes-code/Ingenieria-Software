@@ -78,4 +78,4 @@ Como Empleado de Envío y Recepción, necesito capturar el peso y las dimensione
 
 - **SC-001**: El 100% de los paquetes que avanzan tienen peso y volumen registrados y validados.
 - **SC-002**: El 0% de los paquetes con peso o dimensión igual a cero pueden avanzar en el ciclo de vida.
-- **SC-003**: Los cálculos se completan en menos de 100 ms en el percentil 99.
+- **SC-003**: Los cálculos se completan en menos de 10 s.
