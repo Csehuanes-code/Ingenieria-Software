@@ -36,15 +36,7 @@ La solicitud se emite idealmente una vez por ciclo de vida. Las excepciones son:
 | Escenario |
 |---|
 | Diferencia significativa de datos físicos en bodega, corregida y aprobada |
-| Cambio de dirección autorizado antes del almacenaje | 
-
-### Condiciones de Red
-
-| Condición | Comportamiento |
-|---|---|
-| Normal (RTT < 200 ms) | Respuesta esperada en < 5 s |
-| Degradada (RTT 200–1.000 ms) | Hasta 15 s con reintentos en backoff exponencial |
-| No disponible (timeout > 5 s) | Evento encolado; reintentos cada 30 s, máximo 10 intentos; si falla, alerta al Administrador |
+| Cambio de dirección autorizado antes del almacenaje |
 
 ### Edge Cases
 
