@@ -35,12 +35,12 @@ Como Empleado de Envío y Recepción, necesito capturar el peso y las dimensione
 | Categoría de Carga | Condiciones |
 |---|---|
 | Normal | Peso ≤ 50 kg y volumen ≤ 0.5 m³ |
-| Carga Especial | Peso > 50 kg o volumen > 0.5 m³. Requiere equipo de carga para manipulación. |
+| Carga Especial | Peso > 50 kg AND Peso ≤ 70 kg o volumen > 0.5 m³ AND volumen ≤ 0.7 m³ |
 
 ### Edge Cases
 
 - **Forma irregular**: el empleado activa `Dimensiones irregulares`. Los campos pasan a representar las dimensiones de la caja contenedora mínima imaginaria. La fórmula de cálculo no varía.
-- **Peso > 4.500 kg**: el sistema bloquea el registro y escala al Supervisor de Admisión.
+- **Peso > 70 kg**: el sistema bloquea el registro.
 - **Densidad atípica** (diferencia > 30% entre peso volumétrico y peso real): alerta para revisión antes de continuar.
 - **Mercancía Peligrosa fuera de límites de seguridad**: el sistema bloquea y exige autenticación del Supervisor de Admisión.
 
@@ -50,11 +50,11 @@ Como Empleado de Envío y Recepción, necesito capturar el peso y las dimensione
 
 ### Functional Requirements
 
-- **FR-001**: Aceptar el peso en kilogramos en el rango 0.01–4.500 kg.
+- **FR-001**: Aceptar el peso en kilogramos en el rango 0.01–70 kg.
 - **FR-002**: Calcular el volumen en m³ con la fórmula `V = (largo × ancho × alto) / 1.000.000`, con dimensiones en centímetros.
 - **FR-003**: Validar que el peso y todas las dimensiones sean mayores a cero.
 - **FR-004**: Aplicar las restricciones de zona y manejo según el tipo de mercancía seleccionado.
-- **FR-005**: Emitir alerta `Carga Especial` y pedir confirmación cuando peso > 50 kg o volumen > 0.5 m³.
+- **FR-005**: Emitir alerta `Carga Especial` y pedir confirmación cuando peso > 50 kg AND peso ≤ 70 kg o volumen > 0.5 m³ AND volumen ≤ 0.7 m³.
 - **FR-006**: Calcular el peso volumétrico (`volumen_m3 × 250`) y emitir alerta de `Densidad atípica` si la diferencia con el peso real supera el 30%.
 - **FR-007**: Calcular y mostrar el precio de envío con la fórmula:
   ```
@@ -66,7 +66,6 @@ Como Empleado de Envío y Recepción, necesito capturar el peso y las dimensione
   ```
   El **peso facturable** es el mayor entre el peso real y el peso volumétrico. Las tarifas son configurables por el Administrador del Sistema. El precio es inmutable una vez confirmado el registro.
 - **FR-008**: Ofrecer el modo `Dimensiones irregulares` como toggle en el formulario, con ilustración de referencia de la caja contenedora mínima.
-- **NFR-001**: Los cálculos deben completarse en menos de 100 ms tras ingresar los valores.
 
 ### Key Entities
 
