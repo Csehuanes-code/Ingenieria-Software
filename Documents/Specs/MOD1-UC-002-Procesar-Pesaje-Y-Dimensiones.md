@@ -4,11 +4,11 @@
 
 ## User Scenarios & Testing
 
-### User Story 1 — Captura de medidas y cálculo del precio (P1)
+### User Story 2 — Captura de medidas y cálculo del precio (P1)
 
 Como Empleado de Envío y Recepción, necesito capturar el peso y las dimensiones del paquete para calcular el precio de envío y proveer al `Módulo de Gestión de Rutas` los datos físicos que necesita para asignar el vehículo correcto.
 
-**Why this priority**: Una medición incorrecta afecta el precio cobrado y puede comprometer la seguridad de los vehículos. Es invocado obligatoriamente por [Registrar Admisión de Paquete(MOD1-UC-001)](./MOD1-UC-001-Registrar-Admision-De-Paquete.md). El precio calculado se muestra al cliente durante la admisión y queda fijo al confirmar.
+**Why this priority**: Una medición incorrecta afecta el precio cobrado y puede comprometer la seguridad de los vehículos. Es invocado obligatoriamente por [Registrar Admisión de Paquete (MOD1-UC-001)](./MOD1-UC-001-Registrar-Admision-De-Paquete.md). El precio calculado se muestra al cliente durante la admisión y queda fijo al confirmar.
 
 **Independent Test**: Ingresar peso y dimensiones, y verificar que el sistema calcule volumen, peso volumétrico y precio correctamente, emita las alertas según el tipo de mercancía y bloquee valores inválidos.
 
@@ -39,10 +39,10 @@ Como Empleado de Envío y Recepción, necesito capturar el peso y las dimensione
 
 ### Edge Cases
 
-- **Forma irregular**: el empleado activa `Dimensiones irregulares`. Los campos pasan a representar las dimensiones de la caja contenedora mínima imaginaria. La fórmula de cálculo no varía.
-- **Peso > 70 kg**: el sistema bloquea el registro.
-- **Densidad atípica** (diferencia > 30% entre peso volumétrico y peso real): alerta para revisión antes de continuar.
-- **Mercancía Peligrosa fuera de límites de seguridad**: el sistema bloquea y exige autenticación del Supervisor de Admisión.
+- **¿Qué ocurre si el paquete tiene una forma irregular?** El empleado activa el modo `Dimensiones irregulares`. Los campos pasan a representar las dimensiones de la caja contenedora mínima imaginaria. La fórmula de cálculo no varía.
+- **¿Cómo maneja el sistema un paquete cuyo peso supera los 70 kg?** El sistema bloquea el registro de forma inmediata e impide continuar el flujo.
+- **¿Qué sucede cuando la diferencia entre el peso volumétrico y el peso real supera el 30%?** El sistema emite una alerta de `Densidad atípica` que requiere revisión y confirmación explícita del empleado antes de poder continuar.
+- **¿Qué pasa si el empleado ingresa un peso o una dimensión igual a cero?** El sistema valida que todos los valores sean estrictamente mayores a cero y bloquea el avance con un mensaje de error descriptivo.
 
 ---
 
