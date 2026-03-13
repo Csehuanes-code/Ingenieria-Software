@@ -47,17 +47,6 @@ Como Controlador de Novedades, necesito recibir y procesar los estados y novedad
    - **When** el Controlador registra la novedad como `Devolución`.
    - **Then** el sistema actualiza el estado a `Novedad en Bodega - Devolución`, notifica a remitente y destinatario informando que el paquete será retornado a la sede, y **expone la información del paquete** mediante el endpoint `GET /route/{idRoute}/package/{idPaquete}` para que el Módulo de Gestión de Finanzas pueda consultarla de forma síncrona.
 
-### Análisis post-devolución
-
-Una vez recibido el paquete devuelto en bodega, se realiza una inspección física. El estado siguiente depende del resultado de dicha inspección. En todos los casos, el **destino final del paquete es la sede de origen**:
-
-| Resultado del análisis | Estado resultante |
-|---|---|
-| Paquete en buen estado | `En Clasificación` (por defecto) |
-| Daño detectado | `Novedad en Bodega - Dañado` |
-| Requiere instrucción del remitente | `En Espera de Instrucción` |
-| Contenido parcialmente extraviado | `Novedad en Bodega - Extraviado` |
-
 ### Edge Cases
 
 - **¿Qué ocurre si el Módulo de Gestión de Finanzas no puede consultar el endpoint porque no está disponible?** El sistema mantiene la novedad registrada localmente y el estado del paquete actualizado. El endpoint permanece disponible para reintentos posteriores por parte del Módulo de Finanzas.
