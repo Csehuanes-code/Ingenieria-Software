@@ -1,0 +1,4 @@
+# Ignorar la carpeta de configuración de VS Code
+.vscode/
+.idea/
+Comunicacion-Entre-Modulos/
